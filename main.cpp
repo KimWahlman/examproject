@@ -2,13 +2,15 @@
 #include <stdio.h>
 #include <ctime>
 #include <cstdint>
+#include <cstdlib>
 // 100 000 = ~50 sec
 //  95 000 = ~40 sec
 //  90 000 = ~18 sec
-const int size = 100000;
+const int size = 40;
 
 int main()
 {
+	std::srand((unsigned int)time(NULL));
 	std::clock_t begin = clock();
 	__int8** test;	// __int8 är chars! :(
 	// Allocated memory
@@ -22,17 +24,17 @@ int main()
 	for (int i = 0; i < size; i++)
 	{
 		for (int j = 0; j < size; j++)
-			test[i][j] = 1;
+			test[i][j] = std::rand() % 3;
 	}
 
 	double elapsedSecs = double(end - begin) / CLOCKS_PER_SEC;
-//	std::cout << "Elapsed seconds since launch: " << elapsedSecs << "\n";
-	//for (int i = 0; i < size; i++)
-	//{
-	//	for (int j = 0; j < size; j++)
-	//		std::cout << (int)test[i][j] << ", ";
-	//	std::cout << "\n";
-	//}
+	std::cout << "Elapsed seconds since launch: " << elapsedSecs << "\n";
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+			std::cout << test[i][j] << ",";
+		//std::cout << "\n";
+	}
 	std::cout << "Elapsed seconds since launch: " << elapsedSecs << "\n";
 	std::cin.get();
 }
