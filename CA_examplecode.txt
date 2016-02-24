@@ -1,6 +1,11 @@
-//
-// Fina grottor: %s 79 23 25 3 2 1
-//
+// CMD tester
+// Fina grottor:	%s 79 23 25 3 2 1
+//					%s 79 23 45 5 1 5
+//					%s 79 47 35 5 1 500
+//					%s 79 47 45 9 9 3
+// Världar
+//					%s 79 47 45 9 9 1
+
 
 #include <stdio.h>
 #include <stdlib.h>
