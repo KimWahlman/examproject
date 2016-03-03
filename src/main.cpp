@@ -3,6 +3,7 @@
 #include <ctime>
 #include <cstdint>
 #include <cstdlib>
+#include "CellularAutomata\CellularAutomata.h"
 // 100 000 = ~50 sec
 //  95 000 = ~40 sec
 //  90 000 = ~18 sec
