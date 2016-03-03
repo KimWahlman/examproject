@@ -53,6 +53,15 @@ public:
 	// TODO: This function will be used to init the array, and randomize each element in the array
 	inline void				init() 
 	{
+		int x, y;
+		mGrid	= new int*[mSizeY];
+		mGrid2	= new int*[mSizeX];
+
+		// Randomize if the element is a wall or floor.
+		for (y = 0; y < mSizeY; y++)
+			for (x = 0; x < mSizeX; x++)
+				mGrid[y][x] = RandomizeCells();
+
 
 	}
 };
