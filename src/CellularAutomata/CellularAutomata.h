@@ -10,17 +10,20 @@
 // TODO: Fix better documentation
 typedef struct 
 {
-	
-	int						WallNeighbours1,			// How many neighbours must be walls?
+							// How many neighbours must be walls?
+	int						WallNeighbours1,
 							WallNeighbours2;
 
-	int						RepeatSimXTurns;			// How many generations will we generated?
+							// How many generations will we generated?
+	int						RepeatSimXGenerations;
 } GenerationParameters;
 
 class CellularAutomata
 {
-	int						mFillProbability;			// How probible is it that a cell is a wall?
-	int						mSizeX, mSizeY;				// Size of the map.
+							// How probible is it that a cell is a wall?
+	int						mFillProbability;
+							// Size of the map.
+	int						mSizeX, mSizeY;
 	int						mGenerations;				
 
 	GenerationParameters	*mGenParams,
@@ -29,15 +32,9 @@ class CellularAutomata
 	int						**mGrid,
 							**mGrid2;
 public:
-	CellularAutomata(int i, int j, int sizeX, int sizeY, int fillProbability) 
-	{
-		mGenParams->WallNeighbours1 = i; 
-		mGenParams->WallNeighbours2 = j;
-		mFillProbability			= fillProbability;
-		mSizeX						= sizeX;
-		mSizeY						= sizeY;
-
-	}
+	CellularAutomata(int i, int j, 
+					 int sizeX, int sizeY, 
+					 int fillProbability) {	}
 
 	~CellularAutomata() { }
 
@@ -48,22 +45,20 @@ public:
 							{ mGenParamsSet->WallNeighbours1 = i, mGenParamsSet->WallNeighbours2 = j; }
 	
 	// Randomize if a tile is open or not in the cave.
+	// This is based upon probability. Higher value is equal to
+	// a higher chance the space is a wall.
 	inline int				RandomizeCells() { return (std::rand() % 100 < mFillProbability ? WALL : FLOOR); }
 
-	// TODO: This function will be used to init the array, and randomize each element in the array
-	inline void				init() 
-	{
-		int x, y;
-		mGrid	= new int*[mSizeY];
-		mGrid2	= new int*[mSizeX];
+	// Some GetFunctions that might come in handy.
+	inline int				GetSizeX() const { return mSizeX; }
+	inline int				GetSizeY() const { return mSizeY; }
+	inline int				GetFillProbability() const { return mFillProbability; }
 
-		// Randomize if the element is a wall or floor.
-		for (y = 0; y < mSizeY; y++)
-			for (x = 0; x < mSizeX; x++)
-				mGrid[y][x] = RandomizeCells();
+	// TODO: Implement Set-functions.
 
-
-	}
+	// Init the array, and randomize each element in the array.
+	// Also sets a wall around the maze.
+	void					init();
 };
 
 #endif
