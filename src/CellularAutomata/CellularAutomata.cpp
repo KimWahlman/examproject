@@ -1,19 +1,31 @@
 #include "CellularAutomata.h"
 
-CellularAutomata::CellularAutomata(int i, int j, int sizeX, int sizeY, int fillProbability)
-{
-	mGenParams->WallNeighbours1 = i;
-	mGenParams->WallNeighbours2 = j;
-	mFillProbability = fillProbability;
-	mSizeX = sizeX;
-	mSizeY = sizeY;
-}
+//CellularAutomata::CellularAutomata(int wallneighbours1, int wallneighbours2, int sizeX, int sizeY, int fillProbability)
+//{
+//	mGenParams->WallNeighbours1 = wallneighbours1;
+//	mGenParams->WallNeighbours2 = wallneighbours2;
+//	mFillProbability = fillProbability;
+//	mSizeX = sizeX;
+//	mSizeY = sizeY;
+//}
 
 //TODO: Implement deletion of pointers.
-CellularAutomata::~CellularAutomata() { }
-
-void CellularAutomata::init() 
+CellularAutomata::~CellularAutomata() 
 { 
+	delete mGenParams;
+	delete mGenParamsSet;
+}
+
+void CellularAutomata::init(int wallneighbours1, int wallneighbours2, int sizeX, int sizeY, int fillProbability)
+{ 
+	mGenParams = mGenParamsSet = new GenerationParameters;
+
+	SetWallNeighbours1(wallneighbours1);
+	SetWallNeighbours2(wallneighbours2);
+	SetXSize(sizeX);
+	SetYSize(sizeY);
+	SetFillProbablity(fillProbability);
+
 	mGrid = new int*[mSizeY];
 	mGrid2 = new int*[mSizeX];
 

@@ -7,37 +7,40 @@
 // 100 000 = ~50 sec
 //  95 000 = ~40 sec
 //  90 000 = ~18 sec
-const int size = 40;
+// const int size = 40;
 
 int main()
 {
-	std::srand((unsigned int)time(NULL));
-	std::clock_t begin = clock();
-	__int8** test;	// __int8 är chars! :(
-	// Allocated memory
-	test = new __int8*[size];
-	for (int i = 0; i < size; i++) {
-		test[i] = new __int8[size];
-		//std::cout << i << ", ";
-	}
-	std::clock_t end = clock();
 
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = 0; j < size; j++)
-			test[i][j] = std::rand() % 3;
-	}
+	CellularAutomata::GetInstance().init(5, 5, 50, 50, 45);
 
-	double elapsedSecs = double(end - begin) / CLOCKS_PER_SEC;
-	std::cout << "Elapsed seconds since launch: " << elapsedSecs << "\n";
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = 0; j < size; j++)
-			std::cout << test[i][j] << ",";
-		//std::cout << "\n";
-	}
-	std::cout << "Elapsed seconds since launch: " << elapsedSecs << "\n";
-	std::cin.get();
+	//std::srand((unsigned int)time(NULL));
+	//std::clock_t begin = clock();
+	//__int8** test;	// __int8 är chars! :(
+	//// Allocated memory
+	//test = new __int8*[size];
+	//for (int i = 0; i < size; i++) {
+	//	test[i] = new __int8[size];
+	//	//std::cout << i << ", ";
+	//}
+	//std::clock_t end = clock();
+
+	//for (int i = 0; i < size; i++)
+	//{
+	//	for (int j = 0; j < size; j++)
+	//		test[i][j] = std::rand() % 3;
+	//}
+
+	//double elapsedSecs = double(end - begin) / CLOCKS_PER_SEC;
+	//std::cout << "Elapsed seconds since launch: " << elapsedSecs << "\n";
+	//for (int i = 0; i < size; i++)
+	//{
+	//	for (int j = 0; j < size; j++)
+	//		std::cout << test[i][j] << ",";
+	//	//std::cout << "\n";
+	//}
+	//std::cout << "Elapsed seconds since launch: " << elapsedSecs << "\n";
+	//std::cin.get();
 }
 
 //// Exempelkod för beräkning av CPU usage.
