@@ -9,11 +9,18 @@
 //	mSizeY = sizeY;
 //}
 
-//TODO: Implement deletion of pointers.
+//TODO(Kim): Implement deletion of pointers.
 CellularAutomata::~CellularAutomata() 
 { 
 	delete mGenParams;
 	delete mGenParamsSet;
+
+	// TODO(Kim): Delete pointers for everything
+	for (int i = 0; i < mSizeY; i++)
+		delete mGrid[i];
+	for (int i = 0; i < mSizeY; i++)
+		delete mGrid2[i];
+
 }
 
 void CellularAutomata::init(int wallneighbours1, int wallneighbours2, int sizeX, int sizeY, int fillProbability)
