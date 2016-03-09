@@ -12,7 +12,7 @@
 int main()
 {
 
-	CellularAutomata::GetInstance().init(5, 5, 50, 50, 45);
+	CellularAutomata::GetInstance().Init(5, 5, 50, 50, 45);
 
 	//std::srand((unsigned int)time(NULL));
 	//std::clock_t begin = clock();

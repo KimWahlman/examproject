@@ -71,9 +71,11 @@ public:
 	void					SetFillProbablity(int x = 50) { mFillProbability = x; }
 	// Init the array, and randomize each element in the array.
 	// Also sets a wall around the maze.
-	void					init(int wallneighbours1, int wallneighbours2,
+	void					Init(int wallneighbours1, int wallneighbours2,
 								 int sizeX, int sizeY,
 								 int fillProbability);
+
+	void					Generate();
 };
 
 #endif
