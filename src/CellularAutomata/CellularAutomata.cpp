@@ -9,6 +9,20 @@
 //	mSizeY = sizeY;
 //}
 
+/**
+ * WallNeighboursX(n) = How many neighbours are walls? (wn)
+ *
+ * Example on how this works
+ * WallNeighbours1 = 5
+ * WallNeighbours2 = 2
+ *
+ * mFillProbability = 25
+ *
+ * If mFillProbability is 25, next generation tile T have a 25% chance to be a wall
+ * if at least 5 neighbours are walls.
+ **/
+
+
 //TODO(Kim): Implement deletion of pointers.
 CellularAutomata::~CellularAutomata() 
 { 
@@ -70,12 +84,19 @@ void CellularAutomata::Generate() {
 			int AdjustCountWallNeigbour1 = 0,
 				AdjustCountWallNeigbour2 = 0;
 
-			// This will help adjust if a tile will be a floor tile or a wall tile
+			// Adjust the number of walls needed.
+			// This is a 2 part process, we will check
+			// both WallNeighbours1 and WallNeighbours2
+			// to decide what to do with the tile.
 			for (int i = -1; i <= 1; i++)
+			{
 				for (int j = -1; j <= 1; j++)
+				{
 					if (mGrid[y + i][x + j] != FLOOR)
 						AdjustCountWallNeigbour1++;
 
+				}
+			}
 			for (int i = y - 2; i <= y + 2; i++)
 			{
 				for (int j = x - 2; j <= x + 2; i++)

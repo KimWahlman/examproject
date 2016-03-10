@@ -11,8 +11,8 @@
 typedef struct 
 {
 							// How many neighbours must be walls?
-	int						WallNeighbours1,
-							WallNeighbours2;
+	int						WallNeighbours1,	// WallNeighbouts1 >= input
+							WallNeighbours2;	// WallNeighbouts2 <= input
 
 							// How many generations will we generated?
 	int						RepeatSimXGenerations;

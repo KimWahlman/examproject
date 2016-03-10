@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include "CellularAutomata\CellularAutomata.h"
+#include "CellularAutomata\CAtest.h"
 // 100 000 = ~50 sec
 //  95 000 = ~40 sec
 //  90 000 = ~18 sec
@@ -11,8 +12,23 @@
 
 int main()
 {
-
-	CellularAutomata::GetInstance().Init(5, 5, 50, 50, 45);
+	
+	//std::srand((unsigned int)time_t(NULL));
+	//for (int x = 0; x < 10; x++)
+	//	for (int y = 0; y < 10; y++)
+	//		std::cout << (std::rand() % 100 < 40 ? '#' : '.');
+	bool run = true;
+	CATest::GetInstance().Init(20, 20, 4, 3, 2, 50, 25);
+	while (run)
+	{
+		int x = 0;
+		CATest::GetInstance().EmptyCave();
+		CATest::GetInstance().RandomizeCave();
+		CATest::GetInstance().PrintCave();
+		std::cin >> x;
+		if (x == 1) run = false;
+	}
+	//CellularAutomata::GetInstance().Init(5, 5, 50, 50, 45);
 
 	//std::srand((unsigned int)time(NULL));
 	//std::clock_t begin = clock();
