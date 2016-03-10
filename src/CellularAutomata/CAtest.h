@@ -21,8 +21,10 @@ public:
 
 	~CATest() 
 	{
-		for (int i = 0; i < GetSizeY(); i++)
+		for (int i = 0; i < GetSizeY(); i++) {
 			delete cave[i];
+			delete cave2[i];
+		}
 	} 
 
 	// Set functions
@@ -41,6 +43,8 @@ public:
 	inline int		GetGenerations() const			{ return mGenerations; }
 	inline int		GetChanceToStayAlive() const	{ return mChanceToStayAlive; }
 
+	int				CountLivingNeighbours(int x, int y);
+
 	void			Init(int sizeX = 20, int sizeY = 20, 
 						 int birthLimit = 4, int deathLimit = 3, 
 						 int generations = 2, int changeToStayAlive = 40, 
@@ -53,6 +57,7 @@ public:
 
 	void			StepInGeneration();
 	void			GenerateCave();
+	
 };
 
 #endif

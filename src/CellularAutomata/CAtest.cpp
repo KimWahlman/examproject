@@ -23,8 +23,10 @@ void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int gene
 	// Allocate memory for the map. //////////////
 	
 	cave = new char*[GetSizeY()];
+	cave2 = new char*[GetSizeY()];
 	for (int x = 0; x < GetSizeY(); x++) {
 		cave[x] = new char[GetSizeY()];
+		cave2[x] = new char[GetSizeY()];
 	}
 	
 	/////////////////////////////////////////////
@@ -66,6 +68,7 @@ void CATest::RandomizeCave()
 			if (std::rand() % 100 + 1 < GetChanceToStayAlive())
 				cave[x][y] = '#';
 		}
+	cave2 = cave;
 	FrameCave();
 }
 
@@ -74,8 +77,57 @@ void CATest::PrintCave()
 	for (int x = 0; x < GetSizeX(); x++)
 	{
 		for (int y = 0; y < GetSizeY(); y++)
-			std::cout << cave[x][y];
+			std::cout << cave2[x][y];
 		std::cout << "\n";
 	}
 	std::cin.get();
+}
+
+// How many neighbours is alive around the tile
+// A diagram below show why we have -1 and 2
+// in the for-loops.
+/*
+
+		  x - 1		  x		   x + 1
+		______________________________
+       |         |          |         |
+y - 1  |         |          |         |
+       |_________|__________|_________|
+	   |         |          |         |
+  y    |         |  (x, y)  |         |
+	   |_________|__________|_________|
+	   |         |          |         |
+y + 1  |         |          |         |
+	   |_________|__________|_________|
+
+
+*/
+int CATest::CountLivingNeighbours(int x, int y) 
+{
+	int numOfLivingNeighbours = 0;
+	for (int i = -1; i < 2; i++)
+		for (int j = -1; j < 2; j++)
+		{
+			int XNeighbour = x + i;
+			int YNeighbour = y + j;
+
+			if (i == 0 && j == 0); // We need to avoid looking on the current tile!
+			else if (XNeighbour < 0 || YNeighbour < 0 || XNeighbour >= GetSizeX() || YNeighbour >= GetSizeY())
+				numOfLivingNeighbours++;
+			else if (cave[XNeighbour][YNeighbour])
+				numOfLivingNeighbours++;
+		}
+}
+
+// This will happen in each step of the generation of the cave.
+void CATest::StepInGeneration()
+{
+	for (int i = 0; i < GetSizeX(); i++)
+	{
+		for (int j = 0; j < GetSizeY(); j++)
+		{
+			int livingNeighbours = CountLivingNeighbours(i, j);
+		
+		}
+	}
 }
