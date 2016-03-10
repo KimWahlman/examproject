@@ -24,7 +24,8 @@ CellularAutomata::~CellularAutomata()
 
 void CellularAutomata::Init(int wallneighbours1, int wallneighbours2, int sizeX, int sizeY, int fillProbability)
 { 
-	mGenParams = mGenParamsSet = new GenerationParameters;
+	mGenParams = new GenerationParameters;
+	mGenParamsSet = new GenerationParameters;
 
 	SetWallNeighbours1(wallneighbours1);
 	SetWallNeighbours2(wallneighbours2);
@@ -75,7 +76,13 @@ void CellularAutomata::Generate() {
 					if (mGrid[y + i][x + j] != FLOOR)
 						AdjustCountWallNeigbour1++;
 
-			//for()
+			for (int i = y - 2; i <= y + 2; i++)
+			{
+				for (int j = x - 2; j <= x + 2; i++)
+				{
+
+				}
+			}
 		}
 	}
 }
