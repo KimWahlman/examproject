@@ -18,7 +18,6 @@ void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int gene
 	SetGenerations(generations);
 	SetChanceToStayAlive(changeToStayAlive);
 
-
 	// Allocate memory for the map. //////////////
 	cave = new char*[GetSizeY()];
 	cave2 = new char*[GetSizeY()];
@@ -75,8 +74,6 @@ void CATest::RandomizeCave()
 		for (int x = 0; x < GetSizeX(); x++)
 			if (std::rand() % 100 + 1 < GetChanceToStayAlive())
 				cave[y][x] = '#';
-	//cave2 = cave;
-	//FrameCave();
 }
 
 void CATest::PrintCave()
@@ -88,17 +85,6 @@ void CATest::PrintCave()
 			std::cout << cave[y][x];
 		std::cout << "\n";
 	}
-
-	//for (int y = 0; y < GetSizeY(); y++)
-	//{
-	//	for (int x = 0; x < GetSizeX(); x++)
-	//		std::cout << cave2[y][x];
-	//	std::cout << "\n";
-	//}
-
-
-	Sleep(1000);
-	//system("cls");
 }
 
 // How many neighbours is alive around the tile
@@ -138,18 +124,10 @@ int CATest::CountLivingNeighbours(int x, int y)
 // This will happen in each step of the generation of the cave.
 void CATest::StepInGeneration()
 {
-	//char** temp = new char*[GetSizeY()];
-	//for (int y = 0; y < GetSizeY(); y++)
-	//	temp[y] = new char[GetSizeX()];
-
-	//for (int i = 0; i < GetSizeY(); i++)
-	//	*(temp)[i] = *(cave[i]);
-
 	for (int i = 0; i < GetSizeY(); i++)
 	{
 		for (int j = 0; j < GetSizeX(); j++)
 		{
-		//	PrintCave();
 			int livingNeighbours = CountLivingNeighbours(j, i);
 			if (i == 1 && j == 2)
 				std::cout << livingNeighbours << "\n";
@@ -168,33 +146,12 @@ void CATest::StepInGeneration()
 				else
 					cave2[i][j] = '.';
 			}
-			//std::cout << "living neighbours around ( " << i << ", " << j << " ) = " << livingNeighbours << "\n";
 		}
 	}
-
-	//for (int y = 0; y < GetSizeY(); y++)
-	//{
-	//	for (int x = 0; x < GetSizeX(); x++)
-	//		std::cout << cave[y][x];
-	//	std::cout << "\n";
-	//}
 
 	for (int i = 0; i < GetSizeY(); i++)
 		for (int j = 0; j < GetSizeX(); j++)
 			cave[i][j] = cave2[i][j];
-
-	//for (int y = 0; y < GetSizeY(); y++)
-	//{
-	//	for (int x = 0; x < GetSizeX(); x++)
-	//		std::cout << cave2[y][x];
-	//	std::cout << "\n";
-	//}
-
-	//std::cout << "--------------------------------------------\n";
-
-	//for (int i = 0; i < GetSizeY(); i++)
-	//	*(cave2[i]) = *(temp[i]);
-	//return cave2;
 }
 
 void CATest::GenerateCave()
