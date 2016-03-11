@@ -3,6 +3,7 @@
 #include <ctime>
 #include <cstdint>
 #include <cstdlib>
+#include <Windows.h>
 #include "CellularAutomata\CellularAutomata.h"
 #include "CellularAutomata\CAtest.h"
 // 100 000 = ~50 sec
@@ -12,23 +13,17 @@
 
 int main()
 {
-	
-	//std::srand((unsigned int)time_t(NULL));
-	//for (int x = 0; x < 10; x++)
-	//	for (int y = 0; y < 10; y++)
-	//		std::cout << (std::rand() % 100 < 40 ? '#' : '.');
-	bool run = true;
-	CATest::GetInstance().Init(20, 20, 4, 3, 2, 50, 25);
-	while (run)
-	{
-		int x = 0;
-		CATest::GetInstance().EmptyCave();
-		CATest::GetInstance().RandomizeCave();
-		CATest::GetInstance().PrintCave();
-		std::cin >> x;
-		if (x == 1) run = false;
-	}
-	//CellularAutomata::GetInstance().Init(5, 5, 50, 50, 45);
+	// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Seed
+	CATest::GetInstance().Init(79, 23, 4, 3, 20, 40);
+	//Sleep(3000);
+	CATest::GetInstance().GenerateCave();
+	//CATest::GetInstance().PrintCave();
+	//while (true) {
+	//	
+	//	//CATest::GetInstance().PrintCave();
+	//}
+	std::cin.get();
+	return 0;
 
 	//std::srand((unsigned int)time(NULL));
 	//std::clock_t begin = clock();

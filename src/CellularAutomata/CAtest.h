@@ -1,15 +1,19 @@
 #ifndef CATEST_H
 #define CATEST_H
 
+#include <iostream>
+
 class CATest {
 	int				mSizeX, mSizeY,				// Size of the map
 					mBirthLimit, mDeathLimit,	// Limit for a cell to live/die
-					mGenerations;				// Number of steps the generation will go on.
+					mGenerations,				// Number of steps the generation will go on.
+					mChanceToStayAlive;			// What is the chance for the cell to stay alive in the beginning?
 	
 	char			**cave, **cave2;
-	int				mChanceToStayAlive;		// What is the chance for the cell to stay alive in the beginning?
+
 	CATest() { }
 public:
+
 	static CATest &GetInstance() 
 	{
 		static CATest instance;
@@ -21,10 +25,12 @@ public:
 
 	~CATest() 
 	{
-		for (int i = 0; i < GetSizeY(); i++) {
-			delete cave[i];
-			delete cave2[i];
-		}
+		//for (int i = 0; i < GetSizeY(); i++) {
+		//	delete cave[i];
+		//	delete cave2[i];
+		//}
+		//delete cave;
+		//delete cave2;
 	} 
 
 	// Set functions
@@ -34,7 +40,6 @@ public:
 	inline void		SetDeathLimit(int x)			{ mDeathLimit = x; }
 	inline void		SetGenerations(int x)			{ mGenerations = x; }
 	inline void		SetChanceToStayAlive(int x)	{ mChanceToStayAlive = x; }
-
 	// Get functions
 	inline int		GetSizeX() const				{ return mSizeX; }
 	inline int		GetSizeY() const				{ return mSizeY; }
