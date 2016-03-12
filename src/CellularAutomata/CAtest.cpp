@@ -1,5 +1,4 @@
 #include "CAtest.h"
-#include "../Misc/misc.h"
 #include <random>
 #include <ctime>
 #include <chrono>
@@ -18,7 +17,6 @@ void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int gene
 	SetDeathLimit(deathLimit);
 	SetGenerations(generations);
 	SetChanceToStayAlive(changeToStayAlive);
-
 	// Allocate memory for the map. //////////////
 	cave = new char*[GetSizeY()];
 	cave2 = new char*[GetSizeY()];
@@ -90,7 +88,7 @@ void CATest::PrintCave()
 void CATest::SaveCave()
 {
 	FrameCave();
-	WriteToFile(cave, 1, GetSizeY(), GetTimeToGenerate());
+	fr.WriteToFile(cave, 1, GetSizeY(), GetSizeX(), GetTimeToGenerate());
 }
 
 

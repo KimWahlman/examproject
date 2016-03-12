@@ -6,6 +6,7 @@
 //#include <Windows.h>
 #include "CellularAutomata\CellularAutomata.h"
 #include "CellularAutomata\CAtest.h"
+#include "Misc\misc.h"
 // 100 000 = ~50 sec
 //  95 000 = ~40 sec
 //  90 000 = ~18 sec
@@ -13,8 +14,16 @@
 
 int main()
 {
+	FileReader fr;
+	fr.ReadFromFile(7);
 	// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Seed
-	CATest::GetInstance().Init(1000, 1000, 4, 2, 300, 40);
+	CATest::GetInstance().Init(	fr.FetchData(0),
+								fr.FetchData(1),
+								fr.FetchData(2),
+								fr.FetchData(3),
+								fr.FetchData(4),
+								fr.FetchData(5),
+								fr.FetchData(6) );
 	//Sleep(3000);
 	CATest::GetInstance().GenerateCave();
 	CATest::GetInstance().SaveCave();

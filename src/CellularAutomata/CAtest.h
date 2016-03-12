@@ -2,7 +2,7 @@
 #define CATEST_H
 
 #include <iostream>
-
+#include "..\Misc\misc.h"
 class CATest {
 	int				mSizeX, mSizeY,				// Size of the map
 					mBirthLimit, mDeathLimit,	// Limit for a cell to live/die
@@ -12,7 +12,7 @@ class CATest {
 	double			mTimeToGenerate;
 
 	char			**cave, **cave2;
-
+	FileReader		fr;
 	CATest() { }
 public:
 
