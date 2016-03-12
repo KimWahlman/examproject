@@ -9,7 +9,7 @@ void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int gene
 	if (seed != 0)
 		std::srand(seed);
 	else // Randomize if we don't have a seed
-		std::srand(time(NULL));
+		std::srand((unsigned int)time(NULL));
 
 	SetSizeX(sizeX);
 	SetSizeY(sizeY);
@@ -86,6 +86,12 @@ void CATest::PrintCave()
 		std::cout << "\n";
 	}
 }
+
+void CATest::SaveCave()
+{
+	WriteToFile(cave, 1, GetSizeY());
+}
+
 
 // How many neighbours is alive around the tile
 // The diagram below show why we have -1 and 2

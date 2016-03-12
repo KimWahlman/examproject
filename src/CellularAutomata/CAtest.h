@@ -62,6 +62,7 @@ public:
 
 	void			StepInGeneration();
 	void			GenerateCave();
+	void			SaveCave();
 	
 };
 

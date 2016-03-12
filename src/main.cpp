@@ -1,9 +1,9 @@
-#include <iostream>
-#include <stdio.h>
-#include <ctime>
-#include <cstdint>
-#include <cstdlib>
-#include <Windows.h>
+//#include <iostream>
+//#include <stdio.h>
+//#include <ctime>
+//#include <cstdint>
+//#include <cstdlib>
+//#include <Windows.h>
 #include "CellularAutomata\CellularAutomata.h"
 #include "CellularAutomata\CAtest.h"
 // 100 000 = ~50 sec
@@ -14,9 +14,10 @@
 int main()
 {
 	// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Seed
-	CATest::GetInstance().Init(79, 23, 4, 3, 200, 40);
+	CATest::GetInstance().Init(79, 23, 4, 3, 3, 40);
 	//Sleep(3000);
 	CATest::GetInstance().GenerateCave();
+	CATest::GetInstance().SaveCave();
 	//CATest::GetInstance().PrintCave();
 	//while (true) {
 	//	
