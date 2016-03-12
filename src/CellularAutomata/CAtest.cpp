@@ -2,6 +2,7 @@
 #include "../Misc/misc.h"
 #include <random>
 #include <ctime>
+#include <chrono>
 #include <iostream>
 #include <Windows.h>
 void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int generations, int changeToStayAlive, unsigned int seed) {
@@ -38,7 +39,7 @@ void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int gene
 
 	// Randomize the initial map ////////////////
 	RandomizeCave();
-	PrintCave();
+	//PrintCave();
 	/////////////////////////////////////////////
 }
 
@@ -78,7 +79,6 @@ void CATest::RandomizeCave()
 
 void CATest::PrintCave()
 {
-	FrameCave();
 	for (int y = 0; y < GetSizeY(); y++)
 	{
 		for (int x = 0; x < GetSizeX(); x++)
@@ -89,7 +89,8 @@ void CATest::PrintCave()
 
 void CATest::SaveCave()
 {
-	WriteToFile(cave, 1, GetSizeY());
+	FrameCave();
+	WriteToFile(cave, 1, GetSizeY(), GetTimeToGenerate());
 }
 
 
@@ -135,8 +136,8 @@ void CATest::StepInGeneration()
 		for (int j = 0; j < GetSizeX(); j++)
 		{
 			int livingNeighbours = CountLivingNeighbours(j, i);
-			if (i == 1 && j == 2)
-				std::cout << livingNeighbours << "\n";
+			//if (i == 1 && j == 2)
+			//	std::cout << livingNeighbours << "\n";
 			if (cave[i][j] == '#') 
 			{
 				// If current node is a live but too many neighbours are dead, kill it.
@@ -162,9 +163,12 @@ void CATest::StepInGeneration()
 
 void CATest::GenerateCave()
 {
-	for (int i = 0; i <= GetGenerations(); i++) {
+	std::clock_t begin = std::clock();
+	for (int i = 0; i < GetGenerations(); i++) {
 		StepInGeneration();
-		PrintCave();
-		std::cin.get();
+		//PrintCave();
+		//std::cin.get();
 	}
+	std::clock_t end = std::clock();
+	SetTimeToGenerate(std::chrono::duration<double, std::milli>(end - begin).count());
 }

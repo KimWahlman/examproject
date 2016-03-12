@@ -14,7 +14,7 @@
 int main()
 {
 	// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Seed
-	CATest::GetInstance().Init(79, 23, 4, 3, 3, 40);
+	CATest::GetInstance().Init(1000, 1000, 4, 2, 300, 40);
 	//Sleep(3000);
 	CATest::GetInstance().GenerateCave();
 	CATest::GetInstance().SaveCave();

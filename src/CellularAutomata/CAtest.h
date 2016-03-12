@@ -9,6 +9,8 @@ class CATest {
 					mGenerations,				// Number of steps the generation will go on.
 					mChanceToStayAlive;			// What is the chance for the cell to stay alive in the beginning?
 	
+	double			mTimeToGenerate;
+
 	char			**cave, **cave2;
 
 	CATest() { }
@@ -39,7 +41,8 @@ public:
 	inline void		SetBirthLimit(int x)			{ mBirthLimit = x; }
 	inline void		SetDeathLimit(int x)			{ mDeathLimit = x; }
 	inline void		SetGenerations(int x)			{ mGenerations = x; }
-	inline void		SetChanceToStayAlive(int x)	{ mChanceToStayAlive = x; }
+	inline void		SetChanceToStayAlive(int x)		{ mChanceToStayAlive = x; }
+	inline void		SetTimeToGenerate(double x)		{ mTimeToGenerate = x; }
 	// Get functions
 	inline int		GetSizeX() const				{ return mSizeX; }
 	inline int		GetSizeY() const				{ return mSizeY; }
@@ -47,6 +50,7 @@ public:
 	inline int		GetDeathLimit() const			{ return mDeathLimit; }
 	inline int		GetGenerations() const			{ return mGenerations; }
 	inline int		GetChanceToStayAlive() const	{ return mChanceToStayAlive; }
+	inline double	GetTimeToGenerate() const		{ return mTimeToGenerate; }
 
 	int				CountLivingNeighbours(int x, int y);
 
