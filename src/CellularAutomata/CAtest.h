@@ -7,12 +7,13 @@ class CATest {
 	int				mSizeX, mSizeY,				// Size of the map
 					mBirthLimit, mDeathLimit,	// Limit for a cell to live/die
 					mGenerations,				// Number of steps the generation will go on.
-					mChanceToStayAlive;			// What is the chance for the cell to stay alive in the beginning?
-	
+					mChanceToStayAlive,			// What is the chance for the cell to stay alive in the beginning?
+					mCavesToGenerate,
+					mCavesGenerated,
+					bogusVariable;
 	double			mTimeToGenerate;
 
 	char			**cave, **cave2;
-	FileReader		fr;
 	CATest() { }
 public:
 
@@ -43,6 +44,8 @@ public:
 	inline void		SetGenerations(int x)			{ mGenerations = x; }
 	inline void		SetChanceToStayAlive(int x)		{ mChanceToStayAlive = x; }
 	inline void		SetTimeToGenerate(double x)		{ mTimeToGenerate = x; }
+	inline void		SetCavesToGenerate(int x)		{ mCavesToGenerate = x; }
+	inline void		SetCavesGenerated(int x)		{ mCavesGenerated = x; }
 	// Get functions
 	inline int		GetSizeX() const				{ return mSizeX; }
 	inline int		GetSizeY() const				{ return mSizeY; }
@@ -50,14 +53,16 @@ public:
 	inline int		GetDeathLimit() const			{ return mDeathLimit; }
 	inline int		GetGenerations() const			{ return mGenerations; }
 	inline int		GetChanceToStayAlive() const	{ return mChanceToStayAlive; }
+	inline int		GetCavesToGenerate() const		{ return mCavesToGenerate; }
+	inline int		GetCavesGenerated() const		{ return mCavesGenerated; }
 	inline double	GetTimeToGenerate() const		{ return mTimeToGenerate; }
 
 	int				CountLivingNeighbours(int x, int y);
 
 	void			Init(int sizeX = 20, int sizeY = 20, 
 						 int birthLimit = 4, int deathLimit = 3, 
-						 int generations = 2, int changeToStayAlive = 40, 
-						 unsigned int seed = 0);
+						 int generations = 2, int changeToStayAlive = 40,
+						 int numOfCavesToGenerate = 1, unsigned int seed = 1);
 
 	void			PrintCave();
 	void			RandomizeCave();
@@ -67,7 +72,7 @@ public:
 	void			StepInGeneration();
 	void			GenerateCave();
 	void			SaveCave();
-	
+	void			LifeCycle();
 };
 
 #endif

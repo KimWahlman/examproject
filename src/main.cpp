@@ -14,24 +14,18 @@
 
 int main()
 {
-	FileReader fr;
-	fr.ReadFromFile(7);
-	// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Seed
-	CATest::GetInstance().Init(	fr.FetchData(0),
-								fr.FetchData(1),
-								fr.FetchData(2),
-								fr.FetchData(3),
-								fr.FetchData(4),
-								fr.FetchData(5),
-								fr.FetchData(6) );
-	//Sleep(3000);
-	CATest::GetInstance().GenerateCave();
-	CATest::GetInstance().SaveCave();
-	//CATest::GetInstance().PrintCave();
-	//while (true) {
-	//	
-	//	//CATest::GetInstance().PrintCave();
-	//}
+	FileReader::GetInstance().ReadFromFile(7);
+
+	// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Caves to Generate, Seed
+	CATest::GetInstance().Init( FileReader::GetInstance().FetchData(0),
+								FileReader::GetInstance().FetchData(1),
+								FileReader::GetInstance().FetchData(2),
+								FileReader::GetInstance().FetchData(3),
+								FileReader::GetInstance().FetchData(4),
+								FileReader::GetInstance().FetchData(5),
+								FileReader::GetInstance().FetchData(6),
+								FileReader::GetInstance().FetchData(7) );
+	CATest::GetInstance().LifeCycle();
 	std::cin.get();
 	return 0;
 

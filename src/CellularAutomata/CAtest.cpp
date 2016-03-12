@@ -4,41 +4,59 @@
 #include <chrono>
 #include <iostream>
 #include <Windows.h>
-void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int generations, int changeToStayAlive, unsigned int seed) {
+void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int generations, int changeToStayAlive, int numOfCavesToGenerate, unsigned int seed) 
+{
 	// Do we have a specified seed or will we randomize?
 	if (seed != 0)
 		std::srand(seed);
 	else // Randomize if we don't have a seed
 		std::srand((unsigned int)time(NULL));
 
+	// Set values for various things.
 	SetSizeX(sizeX);
 	SetSizeY(sizeY);
 	SetBirthLimit(birthLimit);
 	SetDeathLimit(deathLimit);
 	SetGenerations(generations);
 	SetChanceToStayAlive(changeToStayAlive);
+	SetCavesToGenerate(numOfCavesToGenerate);
+	SetCavesGenerated(0);
+
 	// Allocate memory for the map. //////////////
 	cave = new char*[GetSizeY()];
 	cave2 = new char*[GetSizeY()];
 
-	for (int y = 0; y < GetSizeY(); y++) {
+	for (int y = 0; y < GetSizeY(); y++) 
+	{
 		cave[y] = new char[GetSizeX()];
 		cave2[y] = new char[GetSizeX()];
 	}
-
 	/////////////////////////////////////////////
+}
 
-	// Set all locations in the map to walls ////
-	// This is just to remove junk-values.
+void CATest::LifeCycle()
+{
+	for (int i = 0; i < FileReader::GetInstance().FetchData(6); i++) // How many caves shall we generate?
+	{
+		/////////////////////////////////////////////
+		// Set all locations in the map to walls ////
+		// This is just to remove junk-values.
+		EmptyCave();
 
-	EmptyCave();
+		/////////////////////////////////////////////
+		// Randomize the initial map ////////////////
+		RandomizeCave();
 
-	/////////////////////////////////////////////
+		/////////////////////////////////////////////
+		// Generate the cave(s) /////////////////////
+		GenerateCave();
 
-	// Randomize the initial map ////////////////
-	RandomizeCave();
-	//PrintCave();
-	/////////////////////////////////////////////
+		/////////////////////////////////////////////
+		// Save the cave(s) in seperate files ///////
+		SaveCave();
+		system("cls");
+		std::cout << GetCavesGenerated() << "/" << GetCavesToGenerate() << " caves generated and saved.\n";
+	}
 }
 
 // Create walls on all edges of the map.
@@ -67,6 +85,7 @@ void CATest::EmptyCave()
 		}
 }
 
+// Randomize the initial layout of the cave.
 void CATest::RandomizeCave()
 {
 	for (int y = 0; y < GetSizeY(); y++)
@@ -75,6 +94,7 @@ void CATest::RandomizeCave()
 				cave[y][x] = '#';
 }
 
+// Debug-function to display the cave.
 void CATest::PrintCave()
 {
 	for (int y = 0; y < GetSizeY(); y++)
@@ -85,10 +105,12 @@ void CATest::PrintCave()
 	}
 }
 
+// Save the cave in a textfile.
 void CATest::SaveCave()
 {
 	FrameCave();
-	fr.WriteToFile(cave, 1, GetSizeY(), GetSizeX(), GetTimeToGenerate());
+	SetCavesGenerated(GetCavesGenerated() + 1);
+	FileReader::GetInstance().WriteToFile(cave, GetCavesGenerated(), GetSizeY(), GetSizeX(), GetTimeToGenerate());
 }
 
 
@@ -159,14 +181,16 @@ void CATest::StepInGeneration()
 			cave[i][j] = cave2[i][j];
 }
 
+// Generate the cave.
+// Here we will also time it and calculate the CPU usage.
+// TODO(Kim): Calculate CPU usage.
 void CATest::GenerateCave()
 {
 	std::clock_t begin = std::clock();
-	for (int i = 0; i < GetGenerations(); i++) {
+
+	for (int i = 0; i < GetGenerations(); i++)
 		StepInGeneration();
-		//PrintCave();
-		//std::cin.get();
-	}
+
 	std::clock_t end = std::clock();
 	SetTimeToGenerate(std::chrono::duration<double, std::milli>(end - begin).count());
 }
