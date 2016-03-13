@@ -36,7 +36,7 @@ void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int gene
 
 void CATest::LifeCycle()
 {
-	for (int i = 0; i < FileReader::GetInstance().FetchData(6); i++) // How many caves shall we generate?
+	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
 	{
 		/////////////////////////////////////////////
 		// Set all locations in the map to walls ////
@@ -55,8 +55,9 @@ void CATest::LifeCycle()
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
 		system("cls");
-		std::cout << GetCavesGenerated() << "/" << GetCavesToGenerate() << " caves generated and saved.\n";
+		//
 	}
+	std::cout << GetCavesGenerated() << "/" << GetCavesToGenerate() << " caves generated and saved.\n";
 }
 
 // Create walls on all edges of the map.
@@ -186,11 +187,13 @@ void CATest::StepInGeneration()
 // TODO(Kim): Calculate CPU usage.
 void CATest::GenerateCave()
 {
-	std::clock_t begin = std::clock();
+	auto begin = std::chrono::high_resolution_clock::now();
 
 	for (int i = 0; i < GetGenerations(); i++)
 		StepInGeneration();
 
-	std::clock_t end = std::clock();
-	SetTimeToGenerate(std::chrono::duration<double, std::milli>(end - begin).count());
+	auto end = std::chrono::high_resolution_clock::now();
+	SetTimeToGenerate(/*std::chrono::duration<double, std::milli>(*/
+		std::chrono::duration<double, std::milli>(end - begin).count()
+	/*).count()*/);
 }
