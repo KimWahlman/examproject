@@ -7,15 +7,11 @@
 #include <iostream>
 #include <iomanip>
 #include <Windows.h>
-// This will be used to decide cave size, birth- and death limits, 
-// numbers of generations the sumulation will continue,
-// the initial survivial rate and seed.
-// Seed = 0 will remove the usage of a seed.
 
 class FileReader
 {
 	int iData[8];			// Will hold information for the system to use.
-	double dData[100];
+	double dData[100];		// Will hold data read from the 
 	FileReader() { }
 public:
 

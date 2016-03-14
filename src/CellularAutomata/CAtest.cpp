@@ -3,7 +3,7 @@
 #include <ctime>
 #include <chrono>
 #include <iostream>
-#include <Windows.h>
+//#include <Windows.h>
 void CATest::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int generations, int changeToStayAlive, int numOfCavesToGenerate, unsigned int seed) 
 {
 	// Do we have a specified seed or will we randomize?
@@ -193,7 +193,5 @@ void CATest::GenerateCave()
 		StepInGeneration();
 
 	auto end = std::chrono::high_resolution_clock::now();
-	SetTimeToGenerate(/*std::chrono::duration<double, std::milli>(*/
-		std::chrono::duration<double, std::milli>(end - begin).count()
-	/*).count()*/);
+	SetTimeToGenerate(std::chrono::duration<double, std::milli>(end - begin).count());
 }

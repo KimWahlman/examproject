@@ -4,7 +4,6 @@
 //#include <cstdint>
 //#include <cstdlib>
 //#include <Windows.h>
-#include "CellularAutomata\CellularAutomata.h"
 #include "CellularAutomata\CAtest.h"
 #include "Misc\misc.h"
 // 100 000 = ~50 sec
