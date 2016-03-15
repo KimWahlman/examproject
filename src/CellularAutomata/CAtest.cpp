@@ -187,11 +187,10 @@ void CATest::StepInGeneration()
 // TODO(Kim): Calculate CPU usage.
 void CATest::GenerateCave()
 {
-	auto begin = std::chrono::high_resolution_clock::now();
-
+	Timer t;
+	t.StartTimer();
 	for (int i = 0; i < GetGenerations(); i++)
 		StepInGeneration();
-
-	auto end = std::chrono::high_resolution_clock::now();
-	SetTimeToGenerate(std::chrono::duration<double, std::milli>(end - begin).count());
+	t.StopTimer();
+	SetTimeToGenerate(t.GetDuration());
 }
