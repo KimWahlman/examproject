@@ -14,7 +14,10 @@ class CATest {
 	double			mTimeToGenerate;
 
 	char			**cave, **cave2;
+
 	CATest() { }
+
+	void			FrameCave();
 public:
 
 	static CATest &GetInstance() 
@@ -67,7 +70,6 @@ public:
 	void			PrintCave();
 	void			RandomizeCave();
 	void			EmptyCave();
-	void			FrameCave();
 
 	void			StepInGeneration();
 	void			GenerateCave();
