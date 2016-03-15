@@ -28,24 +28,29 @@ class Builder {
 
 	bool					mOrthogonallMovementAllowed; // Is orthogonal movement allowed? If it isn't carve a wider cooridor on the diagonal.	
 public:
-	Builder();
-	~Builder() { delete mStart; }
+	Builder(int sx = 1, int sy = 1, int px = 1, int py = 1);
+	~Builder();
 
 	inline void				SetStartPos(int x, int y) { mStart[0] = x, mStart[1] = y; }
-	inline void				SetXY(int x, int y) { mPos[0] = x; mPos[1] = y; }
-	inline void				SetX(int x) { mPos[0] = x; }
-	inline void				SetY(int y) { mPos[1] = y; }
+	inline void				SetPosXY(int x, int y) { mPos[0] = x; mPos[1] = y; }
+	inline void				SetPosX(int x) { mPos[0] = x; }
+	inline void				SetPosY(int y) { mPos[1] = y; }
 	inline void				SetDirection(int dir) { mDirection = dir; }
 	inline void				SetCorridorLenght(int x) { mCorridorLenght = x; }
-	inline void				SetOrthogonallMovementAllowed(bool x) { mOrthogonallMovementAllowed = x; }
+	inline void				SetOrthogonalMovementAllowed(bool x) { mOrthogonallMovementAllowed = x; }
 
-	inline int*				GetStart() const { return mStart; }
+	inline int*				GetStartPos() const { return mStart; }
 	inline int				GetStartX() const { return mStart[0]; }
 	inline int				GetStartY() const { return mStart[1]; }
+	
+	inline int				GetDirection() const { return mDirection; }
+	inline int				GetCorridorLenght() const { return mCorridorLenght; }
 
 	inline int*				GetPos() const { return mPos; }
 	inline int				GetPosX() const { return mPos[0]; }
 	inline int				GetPosY() const { return mPos[1]; }
+
+	inline bool				GetOrtogonalMovementAllowed() const { return mOrthogonallMovementAllowed; }
 };
 
 
@@ -54,11 +59,15 @@ class DLA
 	int						mSizeX, mSizeY,			// Map size
 							mBuildersToSpawn,
 							mSpawnedBuilders;
-	char**					map;
-	std::vector<Builder>	mBuilders;				// Container for builders.
-	DLA() { }
+	char**					cave;
+	Builder*				builder;				// 
+	std::vector<Builder*>	mBuilders;				// Container for builders.
 	
+	DLA() { }
+
+	void					FrameCave();
 public:
+	~DLA();
 	static DLA				&GetInstance()
 	{
 		static DLA instance;
@@ -69,18 +78,24 @@ public:
 	void					operator=(DLA const&)	= delete;
 
 	// TODO(Kim): Implement this!
-	void					Init(int sizeX, int sizeY, int buildersToSpawn);
-	void					SpawnBuilder();
+	void					Init(int sizeX, int sizeY);
+	void					SpawnBuilder(int amountToSpawn = 1);
 	// Might need these.
 	void					StepInGeneration();
 	void					GenerateCave();
 
+	void					FlushBuilders();
+
 	// Setters
+	inline void				SetSizeX(int x) { mSizeX = x; }
+	inline void				SetSizeY(int x) { mSizeY = x; }
 	inline void				SetAmountOfBuilders(int x) { mSpawnedBuilders = x; }
-	inline void				SetStartPos(int x, int y, int builder) { mBuilders[builder].SetStartPos(x, y); }
+	inline void				SetStartPos(int x, int y, int builder) { mBuilders[builder]->SetStartPos(x, y); }
+
 	// Getters
 	inline int				GetAmountOfBuilders() const { return mSpawnedBuilders; }
-
+	inline int				GetSizeX() const { return mSizeX; }
+	inline int				GetSizeY() const { return mSizeY; }
 };
 
 #endif
