@@ -5,6 +5,7 @@
 //#include <cstdlib>
 //#include <Windows.h>
 #include "CellularAutomata\CAtest.h"
+#include "DLA\DLA.h"
 #include "Misc\misc.h"
 // 100 000 = ~50 sec
 //  95 000 = ~40 sec
@@ -13,20 +14,29 @@
 
 int main()
 {
-	
-	FileReader::GetInstance().ReadFromFile("data.txt", 7);
-	
-	// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Caves to Generate, Seed
-	CATest::GetInstance().Init( FileReader::GetInstance().FetchIntData(0),
-								FileReader::GetInstance().FetchIntData(1),
-								FileReader::GetInstance().FetchIntData(2),
-								FileReader::GetInstance().FetchIntData(3),
-								FileReader::GetInstance().FetchIntData(4),
-								FileReader::GetInstance().FetchIntData(5),
-								FileReader::GetInstance().FetchIntData(6),
-								FileReader::GetInstance().FetchIntData(7) );
-	CATest::GetInstance().LifeCycle();
-	Calculations::GetInstance().FindTime(std::to_string(CATest::GetInstance().GetSizeX()) + "x" + std::to_string(CATest::GetInstance().GetSizeY()) + "_data.txt", CATest::GetInstance().GetSizeX(), CATest::GetInstance().GetSizeY());
+
+	/// - CA Example Usage -
+	//FileReader::GetInstance().ReadFromFile("data.txt", 7);
+	//
+	//// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Caves to Generate, Seed
+	//CATest::GetInstance().Init( FileReader::GetInstance().FetchIntData(0),
+	//							FileReader::GetInstance().FetchIntData(1),
+	//							FileReader::GetInstance().FetchIntData(2),
+	//							FileReader::GetInstance().FetchIntData(3),
+	//							FileReader::GetInstance().FetchIntData(4),
+	//							FileReader::GetInstance().FetchIntData(5),
+	//							FileReader::GetInstance().FetchIntData(6),
+	//							FileReader::GetInstance().FetchIntData(7) );
+
+	//CATest::GetInstance().LifeCycle();
+	//Calculations::GetInstance().FindTime(std::to_string(CATest::GetInstance().GetSizeX()) + "x" + std::to_string(CATest::GetInstance().GetSizeY()) + "_data.txt", CATest::GetInstance().GetSizeX(), CATest::GetInstance().GetSizeY());
+	/// - CA Example Usage -
+
+	/// - DLA Example Usage -
+	DLA::GetInstance().Init(20, 20);
+	DLA::GetInstance().SpawnBuilder();
+	DLA::GetInstance().StepInGeneration();
+	/// - DLA Example Usage -
 	std::cin.get();
 	return 0;
 
