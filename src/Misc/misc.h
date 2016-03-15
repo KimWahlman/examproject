@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iomanip>
 #include <Windows.h>
+#include <chrono>
 
 class FileReader
 {
@@ -164,6 +165,19 @@ public:
 		total /= 100;
 		FileReader::GetInstance().WriteToFile("AvgTime.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", total, 8);
 	}
+};
+
+class Timer
+{
+	std::chrono::time_point<std::chrono::high_resolution_clock> mBegin, mEnd;
+	double mDuration;
+public:
+	Timer() { mDuration = 0; }
+	~Timer() { }
+
+	inline void StartTimer() { mBegin = std::chrono::high_resolution_clock::now(); }
+	inline void StopTimer()  { mEnd   = std::chrono::high_resolution_clock::now(); }
+	inline double GetDuration() const { return std::chrono::duration<double, std::milli>(mEnd - mBegin).count();  }
 };
 
 #endif
