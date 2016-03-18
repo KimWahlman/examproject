@@ -65,10 +65,10 @@ public:
 		}
 
 		double temp = time;
-		std::ofstream file("caves/cave_" + std::to_string(caveNumber) + ".txt");
+		std::ofstream file("caves/" + std::to_string(x) + "x" + std::to_string(y) + "_cave_" + std::to_string(caveNumber) + ".txt");
 		if (file.is_open())
 		{
-			file << "Time to generate: " << std::fixed << std::setprecision(precision) << temp << " ms\n";
+			//file << "Time to generate: " << std::fixed << std::setprecision(precision) << temp << " ms\n";
 			for (int i = 0; i < y; i++)
 			{
 				for (int j = 0; j < x; j++)
