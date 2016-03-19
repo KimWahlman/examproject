@@ -2,7 +2,6 @@
 #define DLA_H
 
 #include <vector>
-
 //Pseudocode for block aggregation
 //* Fill a level with wall
 //* Dig a seed tile or block, probably in the centre

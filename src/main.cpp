@@ -4,7 +4,7 @@
 //#include <cstdint>
 //#include <cstdlib>
 //#include <Windows.h>
-#include "CellularAutomata\CAtest.h"
+#include "CellularAutomata\CellularAutomata.h"
 #include "DLA\DLA.h"
 #include "Misc\misc.h"
 // 100 000 = ~50 sec
@@ -19,7 +19,7 @@ int main()
 	//FileReader::GetInstance().ReadFromFile("data.txt", 7);
 	//
 	//// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Caves to Generate, Seed
-	//CATest::GetInstance().Init( FileReader::GetInstance().FetchIntData(0),
+	//CellularAutomata::GetInstance().Init( FileReader::GetInstance().FetchIntData(0),
 	//							FileReader::GetInstance().FetchIntData(1),
 	//							FileReader::GetInstance().FetchIntData(2),
 	//							FileReader::GetInstance().FetchIntData(3),
@@ -27,9 +27,9 @@ int main()
 	//							FileReader::GetInstance().FetchIntData(5),
 	//							FileReader::GetInstance().FetchIntData(6),
 	//							FileReader::GetInstance().FetchIntData(7) );
-
-	//CATest::GetInstance().LifeCycle();
-	//Calculations::GetInstance().FindTime(std::to_string(CATest::GetInstance().GetSizeX()) + "x" + std::to_string(CATest::GetInstance().GetSizeY()) + "_data.txt", CATest::GetInstance().GetSizeX(), CATest::GetInstance().GetSizeY());
+	//
+	//CellularAutomata::GetInstance().LifeCycle();
+	//Calculations::GetInstance().FindTime(std::to_string(CellularAutomata::GetInstance().GetSizeX()) + "x" + std::to_string(CellularAutomata::GetInstance().GetSizeY()) + "_data.txt", CellularAutomata::GetInstance().GetSizeX(), CellularAutomata::GetInstance().GetSizeY());
 	/// - CA Example Usage -
 
 	/// - DLA Example Usage -
