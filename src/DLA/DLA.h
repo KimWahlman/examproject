@@ -20,10 +20,11 @@
 //		http://www.diva-portal.org/smash/record.jsf?pid=diva2%3A551051&dswid=1222
 
 class Builder {
-	int*					mStart;			// Where will the builder spawn?
+	int*					mStart;				// Where will the builder spawn?
 	int*					mPos;				// Where is the builder?
 	int						mDirection,			// What direction will the builder move in? (Randomized)
 							mCorridorLenght;	// How long can a corridor be, might move this to the DLA class.
+							
 
 	bool					mOrthogonallMovementAllowed; // Is orthogonal movement allowed? If it isn't carve a wider cooridor on the diagonal.	
 public:
@@ -58,7 +59,9 @@ class DLA
 	int						mSizeX, mSizeY,			// Map size
 							mBuildersToSpawn,
 							mSpawnedBuilders,
-							mAllocatedBlocks;		// How much of the cave has been filled.
+							mAllocatedBlocks,		// How much of the cave has been filled.
+							mDigSize;
+
 	char**					cave;
 	Builder*				builder;				// 
 	std::vector<Builder*>	mBuilders;				// Container for builders.
@@ -77,30 +80,31 @@ public:
 							DLA(DLA const&)			= delete;
 	void					operator=(DLA const&)	= delete;
 
-	// TODO(Kim): Implement this!
 	void					Init(int sizeX, int sizeY);
+	void					LifeCycle();
 	void					SpawnBuilder(int amountToSpawn = 1);
 	void					EmptyCave();
 	void					PrintCave();
-	// Might need these.
 	void					StepInGeneration();
 	void					GenerateCave();
-
 	void					FlushBuilders();
-	
+
+	inline void				IncrementAllocatedBlocks() { mAllocatedBlocks++; }
+
 	// Setters
 	inline void				SetSizeX(int x) { mSizeX = x; }
 	inline void				SetSizeY(int x) { mSizeY = x; }
 	inline void				SetAmountOfBuilders(int x) { mSpawnedBuilders = x; }
 	inline void				SetStartPos(int x, int y, int builder) { mBuilders[builder]->SetStartPos(x, y); }
 	inline void				SetAllocatedBlocks(int x) { mAllocatedBlocks = x; }
-	inline void				IncrementAllocatedBlocks() { mAllocatedBlocks++; }
+	inline void				SetDigSize(int x) { mDigSize = x; }
 
 	// Getters
 	inline int				GetAmountOfBuilders() const { return mSpawnedBuilders; }
 	inline int				GetSizeX() const { return mSizeX; }
 	inline int				GetSizeY() const { return mSizeY; }
 	inline int				GetAllocatedBlocks() const { return mAllocatedBlocks; }
+	inline int				GetDigSize() const { return mDigSize; }
 };
 
 #endif

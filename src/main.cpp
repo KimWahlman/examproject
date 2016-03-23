@@ -16,7 +16,7 @@ int main()
 {
 
 	/// - CA Example Usage -
-	//FileReader::GetInstance().ReadFromFile("data.txt", 7);
+	FileReader::GetInstance().ReadFromFile("data.txt", 7);
 	//
 	//// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Caves to Generate, Seed
 	//CellularAutomata::GetInstance().Init( FileReader::GetInstance().FetchIntData(0),
@@ -33,12 +33,11 @@ int main()
 	/// - CA Example Usage -
 
 	/// - DLA Example Usage -
-	DLA::GetInstance().Init(20, 20);
-	DLA::GetInstance().SpawnBuilder();
-	DLA::GetInstance().GenerateCave();
-	DLA::GetInstance().PrintCave();
-	/// - DLA Example Usage -
-	std::cin.get();
+	while (true) {		
+		DLA::GetInstance().LifeCycle();
+		/// - DLA Example Usage -
+		std::cin.get();
+	}
 	return 0;
 
 	//std::srand((unsigned int)time(NULL));
