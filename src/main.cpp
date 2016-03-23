@@ -35,7 +35,8 @@ int main()
 	/// - DLA Example Usage -
 	DLA::GetInstance().Init(20, 20);
 	DLA::GetInstance().SpawnBuilder();
-	DLA::GetInstance().StepInGeneration();
+	DLA::GetInstance().GenerateCave();
+	DLA::GetInstance().PrintCave();
 	/// - DLA Example Usage -
 	std::cin.get();
 	return 0;

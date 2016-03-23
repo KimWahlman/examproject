@@ -14,7 +14,7 @@ Builder::Builder(int sx, int sy, int px, int py)
 	mPos[1] = py;
 
 	mDirection = 0;
-	mCorridorLenght = 5;
+	mCorridorLenght = 0;
 	mOrthogonallMovementAllowed = false;
 }
 
@@ -31,12 +31,32 @@ Builder::~Builder()
 	FlushBuilders();
 }
 
+ void DLA::EmptyCave()
+ {
+	 for (int y = 0; y < GetSizeY(); y++)
+		 for (int x = 0; x < GetSizeX(); x++)
+			 cave[y][x] = '.';
+ }
+
  void DLA::FlushBuilders()
  {
-	 // Delete all the builders!
-	 for (unsigned int i = 0; i < mBuilders.size(); i++)
+	 int temp = GetAmountOfBuilders();
+	 std::cout << "Num of builders: " << GetAmountOfBuilders() << "\n";
+	 for (int i = 0; i < temp; i++)
+	 {
 		 delete mBuilders[i];
+		 mBuilders.pop_back();
+		 SetAmountOfBuilders(GetAmountOfBuilders() - 1);
+	 }
+	 std::cout << "Num of builders: " << GetAmountOfBuilders() << "\n";
  }
+
+ //void DLA::FlushBuilders()
+ //{
+	// // Delete all the builders!
+	// for (unsigned int i = 0; i < mBuilders.size(); i++)
+	//	 delete mBuilders[i];
+ //}
 
 void DLA::Init(int sizeX, int sizeY)
 {
@@ -51,6 +71,8 @@ void DLA::Init(int sizeX, int sizeY)
 	cave = new char*[GetSizeY()];
 	for (int y = 0; y < GetSizeY(); y++)
 		cave[y] = new char[GetSizeX()];
+
+	EmptyCave();
 }
 
 void DLA::SpawnBuilder(int amountToSpawn) 
@@ -80,14 +102,194 @@ void DLA::SpawnBuilder(int amountToSpawn)
 
 void DLA::StepInGeneration()
 {
-	for (int i = 0; i < GetAmountOfBuilders(); i++)
-		std::cout << "(x, y) = ("<< mBuilders[i]->GetPosX() << ", " << mBuilders[i]->GetPosY() << ")\n";
+	std::cout << "Step...\n";
+	//for (int i = 0; i < GetAmountOfBuilders(); i++)
+	//	std::cout << "(x, y) = ("<< mBuilders[i]->GetPosX() << ", " << mBuilders[i]->GetPosY() << ")\n";
+	if (GetAmountOfBuilders() < 1)
+		SpawnBuilder(1);
+	else
+	{
+		while (GetAllocatedBlocks() < ((GetSizeY() * GetSizeX()) / 8))
+		{
+			std::cout << "Stepping...\n";
+			std::cout << "GetAllocatedBlocks() = " << GetAllocatedBlocks() << ", ((GetSizeY() * GetSizeX()) / 8) = " << ((GetSizeY() * GetSizeX()) / 8) << "\n";
+			for (int i = 0; i < GetAmountOfBuilders(); i++)
+			{
+				// Norr Y-led
+				if (mBuilders[i]->GetDirection() == 0 && mBuilders[i]->GetPosY() > 0)
+				{
+					mBuilders[i]->SetPosY(mBuilders[i]->GetPosY() - 1);
+					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+					cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				}
+				// Öst X-led
+				else if (mBuilders[i]->GetDirection() == 1 && mBuilders[i]->GetPosX() < GetSizeX())
+				{
+					mBuilders[i]->SetPosX(mBuilders[i]->GetPosX() + 1);
+					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+					cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				}
+				// Syd Y-led
+				else if (mBuilders[i]->GetDirection() == 2 && mBuilders[i]->GetPosY() < GetSizeY())
+				{
+					mBuilders[i]->SetPosY(mBuilders[i]->GetPosY() + 1);
+					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+					cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				}
+				// Väst X-led
+				else if (mBuilders[i]->GetDirection() == 3 && mBuilders[i]->GetPosX() > 0)
+				{
+					mBuilders[i]->SetPosX(mBuilders[i]->GetPosX() + 1);
+					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+					cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				}
+				// Nordöst X- och Y-led
+				else if (mBuilders[i]->GetDirection() == 4 && mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() > 0)
+				{
+					mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() + 1, mBuilders[i]->GetPosY() - 1);
+					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+					cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				}
+				// Sydöst X- och Y-led
+				else if (mBuilders[i]->GetDirection() == 5 && mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
+				{
+					mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() + 1, mBuilders[i]->GetPosY() + 1);
+					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+					cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				}
+				// Sydväst X- och Y-led
+				else if (mBuilders[i]->GetDirection() == 6 && mBuilders[i]->GetPosX() > 0 && mBuilders[i]->GetPosY() < GetSizeY())
+				{
+					mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() - 1, mBuilders[i]->GetPosY() + 1);
+					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+					cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				}
+				// Nordväst X- och Y-led
+				else if (mBuilders[i]->GetDirection() == 7 && mBuilders[i]->GetPosX() > 0 && mBuilders[i]->GetPosY() > 0)
+				{
+					mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() - 1, mBuilders[i]->GetPosY() - 1);
+					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+					cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				}
+
+				// Ensure that builder is touching an existing spot
+				if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY() &&
+					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1 && mBuilders[i]->GetCorridorLenght() <= 5)
+				{
+					// Öst
+					if      (cave[mBuilders[i]->GetPosY()    ][mBuilders[i]->GetPosX() + 1] == 1)
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != 1)
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+
+					// Väst
+					else if (cave[mBuilders[i]->GetPosY()    ][mBuilders[i]->GetPosX() - 1] == 1) 
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != 1)
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+
+					// Syd
+					else if (cave[mBuilders[i]->GetPosY() + 1][mBuilders[i]->GetPosX()    ] == 1) 
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != 1)
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+
+					// Norr
+					else if (cave[mBuilders[i]->GetPosY() - 1][mBuilders[i]->GetPosX()    ] == 1) 
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != 1)
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+
+					// Nordöst
+					else if (cave[mBuilders[i]->GetPosY() - 1][mBuilders[i]->GetPosX() + 1] == 1)
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != 1)
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+						if (mBuilders[i]->GetOrtogonalMovementAllowed())
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() + 1] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+
+					// Sydöst
+					else if (cave[mBuilders[i]->GetPosY() + 1][mBuilders[i]->GetPosX() + 1] == 1) 
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != 1)
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+						if (mBuilders[i]->GetOrtogonalMovementAllowed())
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() + 1] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+
+					// Sydväst
+					else if (cave[mBuilders[i]->GetPosY() + 1][mBuilders[i]->GetPosX() - 1] == 1) 
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != 1)
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+						if (mBuilders[i]->GetOrtogonalMovementAllowed())
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() - 1] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+
+					// Nordväst
+					else if (cave[mBuilders[i]->GetPosY() - 1][mBuilders[i]->GetPosX() - 1] == 1) 
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != 1)
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+						if (mBuilders[i]->GetOrtogonalMovementAllowed())
+						{
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() - 1] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+				}
+				else {
+					//FlushBuilders();
+				}
+			}
+		}
+	}
 }
 
 void DLA::GenerateCave() 
 {
 	Timer t;
 	t.StartTimer();
+	for (int i = 0; i < 10; i++)
+		DLA::GetInstance().StepInGeneration();
 	t.StopTimer();
 }
 
@@ -98,4 +300,15 @@ void DLA::FrameCave()
 
 	for (int i = 0; i < GetSizeX(); i++)
 		cave[0][i] = cave[GetSizeY() - 1][i] = '#';
+}
+
+void DLA::PrintCave()
+{
+	std::cout << "Print cave...\n";
+	for (int y = 0; y < GetSizeY(); y++)
+	{
+		for (int x = 0; x < GetSizeX(); x++)
+			std::cout << cave[y][x];
+		std::cout << "\n";
+	}
 }

@@ -57,7 +57,8 @@ class DLA
 {
 	int						mSizeX, mSizeY,			// Map size
 							mBuildersToSpawn,
-							mSpawnedBuilders;
+							mSpawnedBuilders,
+							mAllocatedBlocks;		// How much of the cave has been filled.
 	char**					cave;
 	Builder*				builder;				// 
 	std::vector<Builder*>	mBuilders;				// Container for builders.
@@ -79,22 +80,27 @@ public:
 	// TODO(Kim): Implement this!
 	void					Init(int sizeX, int sizeY);
 	void					SpawnBuilder(int amountToSpawn = 1);
+	void					EmptyCave();
+	void					PrintCave();
 	// Might need these.
 	void					StepInGeneration();
 	void					GenerateCave();
 
 	void					FlushBuilders();
-
+	
 	// Setters
 	inline void				SetSizeX(int x) { mSizeX = x; }
 	inline void				SetSizeY(int x) { mSizeY = x; }
 	inline void				SetAmountOfBuilders(int x) { mSpawnedBuilders = x; }
 	inline void				SetStartPos(int x, int y, int builder) { mBuilders[builder]->SetStartPos(x, y); }
+	inline void				SetAllocatedBlocks(int x) { mAllocatedBlocks = x; }
+	inline void				IncrementAllocatedBlocks() { mAllocatedBlocks++; }
 
 	// Getters
 	inline int				GetAmountOfBuilders() const { return mSpawnedBuilders; }
 	inline int				GetSizeX() const { return mSizeX; }
 	inline int				GetSizeY() const { return mSizeY; }
+	inline int				GetAllocatedBlocks() const { return mAllocatedBlocks; }
 };
 
 #endif
