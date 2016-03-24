@@ -60,7 +60,8 @@ class DLA
 							mBuildersToSpawn,
 							mSpawnedBuilders,
 							mAllocatedBlocks,		// How much of the cave has been filled.
-							mDigSize;
+							mDigSize,
+							mDigged;
 
 	char**					cave;
 	Builder*				builder;				// 
@@ -88,8 +89,19 @@ public:
 	void					StepInGeneration();
 	void					GenerateCave();
 	void					FlushBuilders();
+	void					CountFloorTiles() {
+		mDigged = 0;
+		for (int i = 0; i < GetSizeY(); i++)
+			for (int j = 0; j < GetSizeX(); j++)
+				if (cave[i][j] == '.')
+					mDigged++;
+	}
 
-	inline void				IncrementAllocatedBlocks() { mAllocatedBlocks++; }
+	inline void				IncrementAllocatedBlocks(/*bool x*/) 
+	{ 
+		//if(cave[mBuilders[0]->GetPosY()][mBuilders[0]->GetPosX()] == '.' && x)
+			mAllocatedBlocks++; 
+	}
 
 	// Setters
 	inline void				SetSizeX(int x) { mSizeX = x; }
@@ -98,13 +110,15 @@ public:
 	inline void				SetStartPos(int x, int y, int builder) { mBuilders[builder]->SetStartPos(x, y); }
 	inline void				SetAllocatedBlocks(int x) { mAllocatedBlocks = x; }
 	inline void				SetDigSize(int x) { mDigSize = x; }
-
+	
 	// Getters
 	inline int				GetAmountOfBuilders() const { return mSpawnedBuilders; }
 	inline int				GetSizeX() const { return mSizeX; }
 	inline int				GetSizeY() const { return mSizeY; }
 	inline int				GetAllocatedBlocks() const { return mAllocatedBlocks; }
 	inline int				GetDigSize() const { return mDigSize; }
+	inline int				GetDigged() const { return mDigged; }
+	inline int				GetDirection() const { return mBuilders[0]->GetDirection(); }
 };
 
 #endif

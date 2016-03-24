@@ -15,7 +15,7 @@ Builder::Builder(int sx, int sy, int px, int py)
 
 	mDirection = 0;
 	mCorridorLenght = 0;
-	mOrthogonallMovementAllowed = false;
+	mOrthogonallMovementAllowed = true;
 }
 
 Builder::~Builder()
@@ -49,13 +49,6 @@ Builder::~Builder()
 	 }
  }
 
- //void DLA::FlushBuilders()
- //{
-	// // Delete all the builders!
-	// for (unsigned int i = 0; i < mBuilders.size(); i++)
-	//	 delete mBuilders[i];
- //}
-
 void DLA::Init(int sizeX, int sizeY)
 {
 	// Do we have a specified seed or will we randomize?
@@ -87,8 +80,8 @@ void DLA::SpawnBuilder(int amountToSpawn)
 	// It will should never spawn in the "frame" of the cave.
 	for (int i = 0; i < amountToSpawn; i++) 
 	{
-		int xr = 1 + std::rand() % (GetSizeX() / 2),
-			yr = 1 + std::rand() % (GetSizeY() / 2);
+		int xr = GetSizeX() / 2,//1 + std::rand() % (GetSizeX() - 1) ,
+			yr = GetSizeY() / 2;//1 + std::rand() % (GetSizeY() - 1) ;
 		if (xr == 0 || xr == GetSizeX() || yr == 0 || yr == GetSizeY()) 
 		{
 			std::cout << "Illegal coordinates, will exit! ("<< xr << ", " << yr << ")\n";
@@ -109,7 +102,7 @@ void DLA::StepInGeneration()
 		SpawnBuilder();
 	else
 	{
-		mBuilders[0]->SetPosXY(GetSizeX() / 2, GetSizeY() / 2);
+		//mBuilders[0]->SetPosXY(GetSizeX(), GetSizeY());
 		while (GetAllocatedBlocks() <= GetDigSize())
 		{
 			//PrintCave();
@@ -119,181 +112,94 @@ void DLA::StepInGeneration()
 			//std::cout << "Builders = " << GetAmountOfBuilders() << "\n";
 			for (int i = 0; i < GetAmountOfBuilders(); i++)
 			{
-				mBuilders[i]->SetDirection(std::rand() % 8);
+				mBuilders[i]->SetDirection(std::rand() % 4);
 				// Norr Y-led
 				if (mBuilders[i]->GetDirection() == 0 && mBuilders[i]->GetPosY() > 0)
 				{
 					mBuilders[i]->SetPosY(mBuilders[i]->GetPosY() - 1);
 					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
-					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
+					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
 						cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+						IncrementAllocatedBlocks();
+					}
 				}
 				// Öst X-led
 				else if (mBuilders[i]->GetDirection() == 1 && mBuilders[i]->GetPosX() < GetSizeX())
 				{
 					mBuilders[i]->SetPosX(mBuilders[i]->GetPosX() + 1);
 					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
-					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
+					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
 						cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+						IncrementAllocatedBlocks();
+					}
 				}
 				// Syd Y-led
 				else if (mBuilders[i]->GetDirection() == 2 && mBuilders[i]->GetPosY() < GetSizeY())
 				{
 					mBuilders[i]->SetPosY(mBuilders[i]->GetPosY() + 1);
 					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
-					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
+					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
 						cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+						IncrementAllocatedBlocks();
+					}
 				}
 				// Väst X-led
 				else if (mBuilders[i]->GetDirection() == 3 && mBuilders[i]->GetPosX() > 0)
 				{
-					mBuilders[i]->SetPosX(mBuilders[i]->GetPosX() + 1);
+					mBuilders[i]->SetPosX(mBuilders[i]->GetPosX() - 1);
 					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
-					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
+					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
 						cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+						IncrementAllocatedBlocks();
+					}
 				}
 				// Nordöst X- och Y-led
-				else if (mBuilders[i]->GetDirection() == 4 && mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() > 0)
-				{
-					mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() + 1, mBuilders[i]->GetPosY() - 1);
-					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
-					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
-						cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+				if (mBuilders[i]->GetOrtogonalMovementAllowed()) {
+					if (mBuilders[i]->GetDirection() == 4 && mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() > 0)
+					{
+						mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() + 1, mBuilders[i]->GetPosY() - 1);
+						mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+						if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+					// Sydöst X- och Y-led
+					else if (mBuilders[i]->GetDirection() == 5 && mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
+					{
+						mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() + 1, mBuilders[i]->GetPosY() + 1);
+						mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+						if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+					// Sydväst X- och Y-led
+					else if (mBuilders[i]->GetDirection() == 6 && mBuilders[i]->GetPosX() > 0 && mBuilders[i]->GetPosY() < GetSizeY())
+					{
+						mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() - 1, mBuilders[i]->GetPosY() + 1);
+						mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+						if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
+					// Nordväst X- och Y-led
+					else if (mBuilders[i]->GetDirection() == 7 && mBuilders[i]->GetPosX() > 0 && mBuilders[i]->GetPosY() > 0)
+					{
+						mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() - 1, mBuilders[i]->GetPosY() - 1);
+						mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
+						if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
+							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							IncrementAllocatedBlocks();
+						}
+					}
 				}
-				// Sydöst X- och Y-led
-				else if (mBuilders[i]->GetDirection() == 5 && mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
-				{
-					mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() + 1, mBuilders[i]->GetPosY() + 1);
-					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
-					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
-						cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-				}
-				// Sydväst X- och Y-led
-				else if (mBuilders[i]->GetDirection() == 6 && mBuilders[i]->GetPosX() > 0 && mBuilders[i]->GetPosY() < GetSizeY())
-				{
-					mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() - 1, mBuilders[i]->GetPosY() + 1);
-					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
-					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
-						cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-				}
-				// Nordväst X- och Y-led
-				else if (mBuilders[i]->GetDirection() == 7 && mBuilders[i]->GetPosX() > 0 && mBuilders[i]->GetPosY() > 0)
-				{
-					mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() - 1, mBuilders[i]->GetPosY() - 1);
-					mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
-					if(mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY())
-						cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-				}
-
 				// Ensure that builder is touching an existing spot
-				if (mBuilders[i]->GetPosX() < (GetSizeX() - 1) && mBuilders[i]->GetPosY() < (GetSizeY() - 1) &&
-					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1 && mBuilders[i]->GetCorridorLenght() <= GetDigSize())
-				{
-					// Öst
-					if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() + 1] == '#')
-					{
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '#')
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-							IncrementAllocatedBlocks();
-						}
-					}
-
-					// Väst
-					else if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() - 1] == '#')
-					{
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '#')
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-							IncrementAllocatedBlocks();
-						}
-					}
-
-					// Syd
-					else if (cave[mBuilders[i]->GetPosY() + 1][mBuilders[i]->GetPosX()] == '#')
-					{
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '#')
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-							IncrementAllocatedBlocks();
-						}
-					}
-
-					// Norr
-					else if (cave[mBuilders[i]->GetPosY() - 1][mBuilders[i]->GetPosX()] == '#')
-					{
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '#')
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-							IncrementAllocatedBlocks();
-						}
-					}
-
-					// Nordöst
-					else if (cave[mBuilders[i]->GetPosY() - 1][mBuilders[i]->GetPosX() + 1] == '#')
-					{
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '#')
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-							IncrementAllocatedBlocks();
-						}
-						if (mBuilders[i]->GetOrtogonalMovementAllowed())
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() + 1] = '.';
-							IncrementAllocatedBlocks();
-						}
-					}
-
-					// Sydöst
-					else if (cave[mBuilders[i]->GetPosY() + 1][mBuilders[i]->GetPosX() + 1] == '#')
-					{
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '#')
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-							IncrementAllocatedBlocks();
-						}
-						if (mBuilders[i]->GetOrtogonalMovementAllowed())
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() + 1] = '.';
-							IncrementAllocatedBlocks();
-						}
-					}
-
-					// Sydväst
-					else if (cave[mBuilders[i]->GetPosY() + 1][mBuilders[i]->GetPosX() - 1] == '#')
-					{
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '#')
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-							IncrementAllocatedBlocks();
-						}
-						if (mBuilders[i]->GetOrtogonalMovementAllowed())
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() - 1] = '.';
-							IncrementAllocatedBlocks();
-						}
-					}
-
-					// Nordväst
-					else if (cave[mBuilders[i]->GetPosY() - 1][mBuilders[i]->GetPosX() - 1] == '#')
-					{
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '#')
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
-							IncrementAllocatedBlocks();
-						}
-						if (mBuilders[i]->GetOrtogonalMovementAllowed())
-						{
-							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX() - 1] = '.';
-							IncrementAllocatedBlocks();
-						}
-					}
-				}
+				if ((mBuilders[i]->GetPosX() < (GetSizeX() - 1) && mBuilders[i]->GetPosY() < (GetSizeY() - 1) &&
+					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= GetDigSize());
 				else 
-				{
-					FlushBuilders();
-					SpawnBuilder();
-				}
+					{ FlushBuilders();	SpawnBuilder();	}
 			}
 		}
 	}
@@ -320,6 +226,9 @@ void DLA::PrintCave()
 {
 	FrameCave();
 	//	std::cout << "Print cave...\n";
+	CountFloorTiles();
+	std::cout << "Digged space         = " << GetDigged() << "\n";
+	std::cout << "GetAllocatedBlocks() = " << GetAllocatedBlocks() << ", mDigSize = " << (mDigSize) << "\n";
 	for (int y = 0; y < GetSizeY(); y++)
 	{
 		for (int x = 0; x < GetSizeX(); x++)
@@ -334,7 +243,7 @@ void DLA::LifeCycle()
 //	system("cls");
 	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
 	{
-		Init(190, 80);
+		Init(150, 80);
 		/////////////////////////////////////////////
 		// Set all locations in the map to walls ////
 		// This is just to remove junk-values.
