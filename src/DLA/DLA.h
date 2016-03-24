@@ -61,7 +61,11 @@ class DLA
 							mSpawnedBuilders,
 							mAllocatedBlocks,		// How much of the cave has been filled.
 							mDigSize,
-							mDigged;
+							mDigged,
+							mCavesGenerated,
+							mCavesToGenerate;
+
+	double					mTimeToGenerate;
 
 	char**					cave;
 	Builder*				builder;				// 
@@ -89,19 +93,10 @@ public:
 	void					StepInGeneration();
 	void					GenerateCave();
 	void					FlushBuilders();
-	void					CountFloorTiles() {
-		mDigged = 0;
-		for (int i = 0; i < GetSizeY(); i++)
-			for (int j = 0; j < GetSizeX(); j++)
-				if (cave[i][j] == '.')
-					mDigged++;
-	}
+	void					CountFloorTiles();
+	void					SaveCave();
 
-	inline void				IncrementAllocatedBlocks(/*bool x*/) 
-	{ 
-		//if(cave[mBuilders[0]->GetPosY()][mBuilders[0]->GetPosX()] == '.' && x)
-			mAllocatedBlocks++; 
-	}
+	inline void				IncrementAllocatedBlocks() { mAllocatedBlocks++; }
 
 	// Setters
 	inline void				SetSizeX(int x) { mSizeX = x; }
@@ -110,7 +105,9 @@ public:
 	inline void				SetStartPos(int x, int y, int builder) { mBuilders[builder]->SetStartPos(x, y); }
 	inline void				SetAllocatedBlocks(int x) { mAllocatedBlocks = x; }
 	inline void				SetDigSize(int x) { mDigSize = x; }
-	
+	inline void				SetCavesGenerated(int x) { mCavesGenerated = x; }
+	inline void				SetTimeToGenerate(double x) { mTimeToGenerate = x; }
+
 	// Getters
 	inline int				GetAmountOfBuilders() const { return mSpawnedBuilders; }
 	inline int				GetSizeX() const { return mSizeX; }
@@ -119,6 +116,10 @@ public:
 	inline int				GetDigSize() const { return mDigSize; }
 	inline int				GetDigged() const { return mDigged; }
 	inline int				GetDirection() const { return mBuilders[0]->GetDirection(); }
+	inline int				GetCavesGenerated() const { return mCavesGenerated; }
+	inline int				GetCavesToGenerate() const { return mCavesToGenerate; }
+
+	inline double			GetTimeToGenerate() { return mTimeToGenerate; }
 };
 
 #endif

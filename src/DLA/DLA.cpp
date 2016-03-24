@@ -3,6 +3,7 @@
 #include <ctime>
 #include <iostream>
 #include "../Misc/misc.h"
+
 Builder::Builder(int sx, int sy, int px, int py) 
 {
 	mStart = new int[2];
@@ -15,7 +16,7 @@ Builder::Builder(int sx, int sy, int px, int py)
 
 	mDirection = 0;
 	mCorridorLenght = 0;
-	mOrthogonallMovementAllowed = true;
+	mOrthogonallMovementAllowed = false;
 }
 
 Builder::~Builder()
@@ -36,6 +37,15 @@ Builder::~Builder()
 	 for (int y = 0; y < GetSizeY(); y++)
 		 for (int x = 0; x < GetSizeX(); x++)
 			 cave[y][x] = '#';
+ }
+
+ void DLA::CountFloorTiles()
+ {
+	 mDigged = 0;
+	 for (int i = 0; i < GetSizeY(); i++)
+		 for (int j = 0; j < GetSizeX(); j++)
+			 if (cave[i][j] == '.')
+				 mDigged++;
  }
 
  void DLA::FlushBuilders()
@@ -80,8 +90,8 @@ void DLA::SpawnBuilder(int amountToSpawn)
 	// It will should never spawn in the "frame" of the cave.
 	for (int i = 0; i < amountToSpawn; i++) 
 	{
-		int xr = GetSizeX() / 2,//1 + std::rand() % (GetSizeX() - 1) ,
-			yr = GetSizeY() / 2;//1 + std::rand() % (GetSizeY() - 1) ;
+		int xr = (GetSizeX() - 1) / 2,//1 + std::rand() % (GetSizeX() - 1) ,
+			yr = (GetSizeY() - 1) / 2;//1 + std::rand() % (GetSizeY() - 1) ;
 		if (xr == 0 || xr == GetSizeX() || yr == 0 || yr == GetSizeY()) 
 		{
 			std::cout << "Illegal coordinates, will exit! ("<< xr << ", " << yr << ")\n";
@@ -89,7 +99,6 @@ void DLA::SpawnBuilder(int amountToSpawn)
 			std::cin.get();
 			exit(0);
 		}
-		//std::cout << "Builder spawned at: (" << xr << ", " << yr << ")\n";
 		mBuilders[i]->SetPosXY(xr, yr);
 	}
 }
@@ -211,6 +220,8 @@ void DLA::GenerateCave()
 	t.StartTimer();
 	DLA::GetInstance().StepInGeneration();
 	t.StopTimer();
+	SetTimeToGenerate(t.GetDuration());
+	//std::cout << "Time to generate: " << GetTimeToGenerate() << "ms\n";
 }
 
 void DLA::FrameCave()
@@ -225,25 +236,22 @@ void DLA::FrameCave()
 void DLA::PrintCave()
 {
 	FrameCave();
-	//	std::cout << "Print cave...\n";
-	CountFloorTiles();
-	std::cout << "Digged space         = " << GetDigged() << "\n";
-	std::cout << "GetAllocatedBlocks() = " << GetAllocatedBlocks() << ", mDigSize = " << (mDigSize) << "\n";
 	for (int y = 0; y < GetSizeY(); y++)
 	{
 		for (int x = 0; x < GetSizeX(); x++)
-			std::cout << cave[y][x];
+			if (y == (GetSizeY() / 2) && x == (GetSizeX() / 2))
+				std::cout << "O";
+			else 
+				std::cout << cave[y][x];
 		std::cout << "\n";
 	}
 }
 
 void DLA::LifeCycle()
 {
-	std::cout << "LifeCycle...\n";
-//	system("cls");
 	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
 	{
-		Init(150, 80);
+		Init(FileReader::GetInstance().FetchIntData(0),	FileReader::GetInstance().FetchIntData(1));
 		/////////////////////////////////////////////
 		// Set all locations in the map to walls ////
 		// This is just to remove junk-values.
@@ -253,13 +261,20 @@ void DLA::LifeCycle()
 		/////////////////////////////////////////////
 		// Generate the cave(s) /////////////////////
 		GenerateCave();
-		PrintCave();
+		//PrintCave();
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
-		//SaveCave();
+		SaveCave();
 		//
-		std::cin.get();
-		system("cls");
+		//std::cin.get();
+		//system("cls");
 	}
 	//std::cout << GetCavesGenerated() << "/" << GetCavesToGenerate() << " caves generated and saved.\n";
+}
+
+void DLA::SaveCave()
+{
+	FrameCave();
+	SetCavesGenerated(GetCavesGenerated() + 1);
+	FileReader::GetInstance().WriteToFile(cave, GetCavesGenerated(), GetSizeY(), GetSizeX(), GetTimeToGenerate());
 }
