@@ -33,11 +33,9 @@ int main()
 	/// - CA Example Usage -
 
 	/// - DLA Example Usage -
-	while (true) {		
-		DLA::GetInstance().LifeCycle();
-		/// - DLA Example Usage -
-		std::cin.get();
-	}
+	DLA::GetInstance().LifeCycle();
+	/// - DLA Example Usage -
+	std::cin.get();
 	return 0;
 
 	//std::srand((unsigned int)time(NULL));
