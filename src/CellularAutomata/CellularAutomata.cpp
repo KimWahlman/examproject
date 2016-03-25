@@ -36,7 +36,6 @@ void CellularAutomata::Init(int sizeX, int sizeY, int birthLimit, int deathLimit
 
 void CellularAutomata::LifeCycle()
 {
-	system("cls");
 	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
 	{
 		/////////////////////////////////////////////
@@ -51,7 +50,7 @@ void CellularAutomata::LifeCycle()
 		/////////////////////////////////////////////
 		// Generate the cave(s) /////////////////////
 		GenerateCave();
-
+		//PrintCave();
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
@@ -115,7 +114,6 @@ void CellularAutomata::SaveCave()
 	t.StartTimer();
 	FileReader::GetInstance().WriteToFile(cave, GetCavesGenerated(), GetSizeY(), GetSizeX(), GetTimeToGenerate());
 	t.StopTimer();
-	std::cout << "Time to save cave was : " << t.GetDuration() << "ms.\n";
 }
 
 
