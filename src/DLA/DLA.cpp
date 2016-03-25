@@ -16,7 +16,7 @@ Builder::Builder(int sx, int sy, int px, int py)
 
 	mDirection = 0;
 	mCorridorLenght = 0;
-	mOrthogonallMovementAllowed = false;
+	mOrthogonallMovementAllowed = true;
 }
 
 Builder::~Builder()
@@ -69,12 +69,12 @@ void DLA::Init(int sizeX, int sizeY)
 	SetSizeY(sizeY);
 	SetAmountOfBuilders(0);
 	SetAllocatedBlocks(0);
-	SetDigSize((GetSizeY() * GetSizeX()) / 2);
+	SetDigSize((GetSizeY() * GetSizeX())/2);
 	// Allocate memory for the map. //////////////
 	cave = new char*[GetSizeY()];
 	for (int y = 0; y < GetSizeY(); y++)
 		cave[y] = new char[GetSizeX()];
-
+//	Sleep(3000);
 	EmptyCave();
 }
 
@@ -90,8 +90,19 @@ void DLA::SpawnBuilder(int amountToSpawn)
 	// It will should never spawn in the "frame" of the cave.
 	for (int i = 0; i < amountToSpawn; i++) 
 	{
-		int xr = (GetSizeX() - 1) / 2,//1 + std::rand() % (GetSizeX() - 1) ,
-			yr = (GetSizeY() - 1) / 2;//1 + std::rand() % (GetSizeY() - 1) ;
+		bool opt = true;
+		int xr = 0, yr = 0;
+		if (opt) {
+			//std::cout << "Spawned here (";
+			xr = 1 + std::rand() % (GetSizeX() - 1);
+			yr = 1 + std::rand() % (GetSizeY() - 1);
+			//std::cout << xr << ", " << yr << ")\n";
+		}
+		else
+		{
+			xr = (GetSizeX() - 1) / 2;
+			yr = (GetSizeY() - 1) / 2;
+		}
 		if (xr == 0 || xr == GetSizeX() || yr == 0 || yr == GetSizeY()) 
 		{
 			std::cout << "Illegal coordinates, will exit! ("<< xr << ", " << yr << ")\n";
@@ -111,17 +122,24 @@ void DLA::StepInGeneration()
 		SpawnBuilder();
 	else
 	{
+		// DEBUG TEXT -v
+		//std::cout << "GENERATION!\n"
+		//	<< "AllocatedBlocks() = " << GetAllocatedBlocks() << "\n"
+		//	<< "GetDigSize() = " << GetDigSize() << "\n";
+		// DEBUG TEXT -^
 		//mBuilders[0]->SetPosXY(GetSizeX(), GetSizeY());
 		while (GetAllocatedBlocks() <= GetDigSize())
 		{
-			//PrintCave();
+			// DEBUG TEXT -v
 			//system("cls");
+			//PrintCave();
 			//std::cout << "Stepping...\n";
 			//std::cout << "GetAllocatedBlocks() = " << GetAllocatedBlocks() << ", mDigSize = " << (mDigSize) << "\n";
 			//std::cout << "Builders = " << GetAmountOfBuilders() << "\n";
+			// DEBUG TEXT -^
 			for (int i = 0; i < GetAmountOfBuilders(); i++)
 			{
-				mBuilders[i]->SetDirection(std::rand() % 4);
+				mBuilders[i]->SetDirection(std::rand() % 8);
 				// Norr Y-led
 				if (mBuilders[i]->GetDirection() == 0 && mBuilders[i]->GetPosY() > 0)
 				{
@@ -206,11 +224,12 @@ void DLA::StepInGeneration()
 				}
 				// Ensure that builder is touching an existing spot
 				if ((mBuilders[i]->GetPosX() < (GetSizeX() - 1) && mBuilders[i]->GetPosY() < (GetSizeY() - 1) &&
-					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= GetDigSize());
+					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= (GetDigSize() / 10));
 				else 
 					{ FlushBuilders();	SpawnBuilder();	}
 			}
 		}
+		SetAllocatedBlocks(0);
 	}
 }
 
@@ -221,7 +240,6 @@ void DLA::GenerateCave()
 	DLA::GetInstance().StepInGeneration();
 	t.StopTimer();
 	SetTimeToGenerate(t.GetDuration());
-	//std::cout << "Time to generate: " << GetTimeToGenerate() << "ms\n";
 }
 
 void DLA::FrameCave()
@@ -249,9 +267,9 @@ void DLA::PrintCave()
 
 void DLA::LifeCycle()
 {
+	Init(FileReader::GetInstance().FetchIntData(0), FileReader::GetInstance().FetchIntData(1));
 	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
 	{
-		Init(FileReader::GetInstance().FetchIntData(0),	FileReader::GetInstance().FetchIntData(1));
 		/////////////////////////////////////////////
 		// Set all locations in the map to walls ////
 		// This is just to remove junk-values.
@@ -261,15 +279,18 @@ void DLA::LifeCycle()
 		/////////////////////////////////////////////
 		// Generate the cave(s) /////////////////////
 		GenerateCave();
+
 		//PrintCave();
+		//std::cin.get();
+
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
-		//
+
 		//std::cin.get();
 		//system("cls");
 	}
-	//std::cout << GetCavesGenerated() << "/" << GetCavesToGenerate() << " caves generated and saved.\n";
+	std::cout << "Generation completed!\n\nPress enter to exit program...\n";
 }
 
 void DLA::SaveCave()
