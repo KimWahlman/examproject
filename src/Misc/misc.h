@@ -12,7 +12,7 @@
 class FileReader
 {
 	int iData[8];			// Will hold information for the system to use.
-	double dData[100];		// Will hold data read from the 
+	double dData[1000];		// Will hold data read from the 
 	FileReader() { }
 public:
 
@@ -137,11 +137,11 @@ public:
 	inline double GetMinTime() const { return mMinTime; }
 	inline double GetMaxTime() const { return mMaxTime; }
 
-	inline void FindTime(std::string filename, int x, int y) {
-		FileReader::GetInstance().ReadFromFile(filename, 100, 1);
-
+	inline void FindTime(std::string filename, int x, int y, int numOfCavesToGenerate) {
+		FileReader::GetInstance().ReadFromFile(filename, numOfCavesToGenerate, 1);
+		
 		double temp = 100000.0;
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < numOfCavesToGenerate; i++)
 		{
 			if (FileReader::GetInstance().FetchDoubleData(i) < temp)
 				temp = FileReader::GetInstance().FetchDoubleData(i);
@@ -149,7 +149,7 @@ public:
 		FileReader::GetInstance().WriteToFile("MinTime.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp);
 		///////////////////////////////////////////////////////
 		temp = 0.0;
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < numOfCavesToGenerate; i++)
 		{
 			if (FileReader::GetInstance().FetchDoubleData(i) > temp)
 				temp = FileReader::GetInstance().FetchDoubleData(i);
@@ -158,11 +158,11 @@ public:
 		///////////////////////////////////////////////////////
 		temp = 0.0;
 		double total = 0.0;
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < numOfCavesToGenerate; i++)
 		{
 			total += FileReader::GetInstance().FetchDoubleData(i);
 		}
-		total /= 100;
+		total /= numOfCavesToGenerate;
 		FileReader::GetInstance().WriteToFile("AvgTime.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", total, 8);
 	}
 };
