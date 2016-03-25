@@ -31,7 +31,7 @@ public:
 	{
 		if (numOfLines == 0)
 		{
-			std::cout << "Line number must be higher than 0.";
+			std::cout << "[ " << filename << " ] Line number must be higher than 0.";
 			return;
 		}
 
