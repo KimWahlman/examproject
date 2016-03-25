@@ -1,109 +1,198 @@
 #include "CellularAutomata.h"
+#include <random>
+#include <ctime>
+#include <chrono>
+#include <iostream>
+//#include <Windows.h>
+void CellularAutomata::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int generations, int changeToStayAlive, int numOfCavesToGenerate, unsigned int seed)
+{
+	// Do we have a specified seed or will we randomize?
+	if (seed != 0)
+		std::srand(seed);
+	else // Randomize if we don't have a seed
+		std::srand((unsigned int)time(NULL));
 
-//CellularAutomata::CellularAutomata(int wallneighbours1, int wallneighbours2, int sizeX, int sizeY, int fillProbability)
-//{
-//	mGenParams->WallNeighbours1 = wallneighbours1;
-//	mGenParams->WallNeighbours2 = wallneighbours2;
-//	mFillProbability = fillProbability;
-//	mSizeX = sizeX;
-//	mSizeY = sizeY;
-//}
+	// Set values for various things.
+	SetSizeX(sizeX);
+	SetSizeY(sizeY);
+	SetBirthLimit(birthLimit);
+	SetDeathLimit(deathLimit);
+	SetGenerations(generations);
+	SetChanceToStayAlive(changeToStayAlive);
+	SetCavesToGenerate(numOfCavesToGenerate);
+	SetCavesGenerated(0);
 
-/**
- * WallNeighboursX(n) = How many neighbours are walls? (wn)
- *
- * Example on how this works
- * WallNeighbours1 = 5
- * WallNeighbours2 = 2
- *
- * mFillProbability = 25
- *
- * If mFillProbability is 25, next generation tile T have a 25% chance to be a wall
- * if at least 5 neighbours are walls.
- **/
+	// Allocate memory for the map. //////////////
+	cave = new char*[GetSizeY()];
+	cave2 = new char*[GetSizeY()];
 
-
-//TODO(Kim): Implement deletion of pointers.
-CellularAutomata::~CellularAutomata() 
-{ 
-	delete mGenParams;
-	delete mGenParamsSet;
-
-	// TODO(Kim): Delete pointers for everything
-	for (int y = 0; y < GetSizeY(); y++)
-		delete mGrid[y];
-	for (int y = 0; y < GetSizeY(); y++)
-		delete mGrid2[y];
+	for (int y = 0; y < GetSizeY(); y++) 
+	{
+		cave[y] = new char[GetSizeX()];
+		cave2[y] = new char[GetSizeX()];
+	}
+	/////////////////////////////////////////////
 }
 
-void CellularAutomata::Init(int wallneighbours1, int wallneighbours2, int sizeX, int sizeY, int fillProbability)
-{ 
-	mGenParams = new GenerationParameters;
-	mGenParamsSet = new GenerationParameters;
+void CellularAutomata::LifeCycle()
+{
+	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
+	{
+		/////////////////////////////////////////////
+		// Set all locations in the map to walls ////
+		// This is just to remove junk-values.
+		EmptyCave();
 
-	SetWallNeighbours1(wallneighbours1);
-	SetWallNeighbours2(wallneighbours2);
-	SetXSize(sizeX);
-	SetYSize(sizeY);
-	SetFillProbablity(fillProbability);
+		/////////////////////////////////////////////
+		// Randomize the initial map ////////////////
+		RandomizeCave();
 
-	mGrid = new int*[GetSizeY()];
-	mGrid2 = new int*[GetSizeX()];
+		/////////////////////////////////////////////
+		// Generate the cave(s) /////////////////////
+		GenerateCave();
+		//PrintCave();
+		/////////////////////////////////////////////
+		// Save the cave(s) in seperate files ///////
+		SaveCave();
+		//
+	}
+	std::cout << GetCavesGenerated() << "/" << GetCavesToGenerate() << " caves generated and saved.\n";
+}
 
-	// Allocate memory for the two grids.
-	// This will make the array an 2D array.
-	// Each 'i', could be visualized as the Y-axis.
+// Create walls on all edges of the map.
+void CellularAutomata::FrameCave()
+{
 	for (int i = 0; i < GetSizeY(); i++)
 	{
-		mGrid[i] = new int[GetSizeX()];
-		mGrid2[i] = new int[GetSizeX()];
+		cave[i][0] = cave[i][GetSizeX() - 1] = '#';
+		cave2[i][0] = cave2[i][GetSizeX() - 1] = '#';
 	}
-
-	// Randomize if the element is a wall or floor.
-	for (int y = 1; y < GetSizeY() - 1; y++)
-		for (int x = 1; x < GetSizeX() - 1; x++)
-			mGrid[y][x] = RandomizeCells();
-
-	// All elements in mGrid2 is set to be a wall.
-	for (int y = 0; y < GetSizeY(); y++)
-		for (int x = 0; x < GetSizeX(); x++)
-			mGrid2[y][x] = WALL;
-
-	// Set the outer rows and columns to be a wall.
-	for (int y = 0; y < GetSizeX(); y++)
-		mGrid[y][0] = mGrid[y][GetSizeY() - 1] = WALL;
-	for (int x = 0; x < GetSizeX(); x++)
-		mGrid[0][x] = mGrid[GetSizeX() - 1][x] = WALL;
+	for (int i = 0; i < GetSizeX(); i++)
+	{
+		cave[0][i] = cave[GetSizeY() - 1][i] = '#';
+		cave2[0][i] = cave2[GetSizeY() - 1][i] = '#';
+	}
 }
 
-void CellularAutomata::Generate() {
-	for (int y = 1; y < GetSizeY() - 1; y++)
-	{
-		for (int x = 1; x < GetSizeX() - 1; x++)
+// Reset the cave to only contain floors.
+void CellularAutomata::EmptyCave()
+{
+	for (int y = 0; y < GetSizeY(); y++)
+		for (int x = 0; x < GetSizeX(); x++) 
 		{
-			int AdjustCountWallNeigbour1 = 0,
-				AdjustCountWallNeigbour2 = 0;
+			cave[y][x] = '.';
+			cave2[y][x] = '.';
+		}
+}
 
-			// Adjust the number of walls needed.
-			// This is a 2 part process, we will check
-			// both WallNeighbours1 and WallNeighbours2
-			// to decide what to do with the tile.
-			for (int i = -1; i <= 1; i++)
+// Randomize the initial layout of the cave.
+void CellularAutomata::RandomizeCave()
+{
+	for (int y = 0; y < GetSizeY(); y++)
+		for (int x = 0; x < GetSizeX(); x++)
+			if (std::rand() % 100 + 1 < GetChanceToStayAlive())
+				cave[y][x] = '#';
+}
+
+// Debug-function to display the cave.
+void CellularAutomata::PrintCave()
+{
+	for (int y = 0; y < GetSizeY(); y++)
+	{
+		for (int x = 0; x < GetSizeX(); x++)
+			std::cout << cave[y][x];
+		std::cout << "\n";
+	}
+}
+
+// Save the cave in a textfile.
+void CellularAutomata::SaveCave()
+{
+	FrameCave();
+	SetCavesGenerated(GetCavesGenerated() + 1);
+	Timer t;
+	t.StartTimer();
+	FileReader::GetInstance().WriteToFile(cave, GetCavesGenerated(), GetSizeY(), GetSizeX(), GetTimeToGenerate());
+	t.StopTimer();
+}
+
+
+// How many neighbours is alive around the tile
+// The diagram below show why we have -1 and 2
+// in the for-loops.
+/*
+ ___________________________________
+|           |           |           |
+| (x-1,y-1) | ( x, y-1) | (x+1,y-1) |
+|___________|___________|___________|
+|           |           |           |
+| (x-1, y ) |  (x, y )  | (x+1, y ) |
+|___________|___________|___________|
+|           |           |           |
+| (x-1,y+1) | ( x, y+1) | (x+1,y+1) |
+|___________|___________|___________|
+
+*/
+int CellularAutomata::CountLivingNeighbours(int x, int y)
+{
+	int numOfLivingNeighbours = 0;
+	for (int i = -1; i < 2; i++)
+		for (int j = -1; j < 2; j++)
+		{
+			int XNeighbour = x + j;
+			int YNeighbour = y + i;
+
+			if (i == 0 && j == 0); // We need to avoid looking on the current tile!
+			else if (XNeighbour < 0 || YNeighbour < 0 || XNeighbour >= GetSizeX() || YNeighbour >= GetSizeY())
+				numOfLivingNeighbours++;
+			else if (cave[YNeighbour][XNeighbour] == '#')
+				numOfLivingNeighbours++;
+		}
+	return numOfLivingNeighbours;
+}
+
+// This will happen in each step of the generation of the cave.
+void CellularAutomata::StepInGeneration()
+{
+	for (int i = 0; i < GetSizeY(); i++)
+	{
+		for (int j = 0; j < GetSizeX(); j++)
+		{
+			int livingNeighbours = CountLivingNeighbours(j, i);
+			//if (i == 1 && j == 2)
+			//	std::cout << livingNeighbours << "\n";
+			if (cave[i][j] == '#') 
 			{
-				for (int j = -1; j <= 1; j++)
-				{
-					if (mGrid[y + i][x + j] != FLOOR)
-						AdjustCountWallNeigbour1++;
-
-				}
+				// If current node is a live but too many neighbours are dead, kill it.
+				if (livingNeighbours < GetDeathLimit())
+					cave2[i][j] = '.';
+				else
+					cave2[i][j] = '#';
 			}
-			for (int i = y - 2; i <= y + 2; i++)
+			else// if(cave[i][j] == '#')
 			{
-				for (int j = x - 2; j <= x + 2; i++)
-				{
-
-				}
+				if(livingNeighbours > GetBirthLimit())
+					cave2[i][j] = '#';
+				else
+					cave2[i][j] = '.';
 			}
 		}
 	}
+
+	for (int i = 0; i < GetSizeY(); i++)
+		for (int j = 0; j < GetSizeX(); j++)
+			cave[i][j] = cave2[i][j];
+}
+
+// Generate the cave.
+// Here we will also time it and calculate the CPU usage.
+// TODO(Kim): Calculate CPU usage.
+void CellularAutomata::GenerateCave()
+{
+	Timer t;
+	t.StartTimer();
+	for (int i = 0; i < GetGenerations(); i++)
+		StepInGeneration();
+	t.StopTimer();
+	SetTimeToGenerate(t.GetDuration());
 }

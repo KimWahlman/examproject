@@ -1,81 +1,81 @@
-#ifndef CELLULARAUTOMATA_H
-#define CELLULARAUTOMATA_H
+#ifndef CATEST_H
+#define CATEST_H
 
-#include <ctime>
-#include <random>
+#include <iostream>
+#include "..\Misc\misc.h"
 
-#define WALL 1
-#define FLOOR 0
+class CellularAutomata {
+	int				mSizeX, mSizeY,				// Size of the map
+					mBirthLimit, mDeathLimit,	// Limit for a cell to live/die
+					mGenerations,				// Number of steps the generation will go on.
+					mChanceToStayAlive,			// What is the chance for the cell to stay alive in the beginning?
+					mCavesToGenerate,
+					mCavesGenerated,
+					bogusVariable;
+	double			mTimeToGenerate;
 
-// TODO(Kim): Fix better documentation
-typedef struct 
-{
-							// How many neighbours must be walls?
-	int						WallNeighbours1,	// WallNeighbouts1 >= input
-							WallNeighbours2;	// WallNeighbouts2 <= input
+	char			**cave, **cave2;
 
-							// How many generations will we generated?
-	int						RepeatSimXGenerations;
-} GenerationParameters;
+	CellularAutomata() { }
 
-class CellularAutomata
-{
-							CellularAutomata() { }
-							// How probible is it that a cell is a wall?
-	int						mFillProbability;
-							// Size of the map.
-	int						mSizeX, mSizeY;
-	int						mGenerations;				
-
-	GenerationParameters	*mGenParams,
-							*mGenParamsSet;
-
-	int						**mGrid,
-							**mGrid2;
+	void			FrameCave();
 public:
-	/*CellularAutomata(int wallneighbours1, int wallneighbours2,
-					 int sizeX, int sizeY, 
-					 int fillProbability) {	}*/
-	static CellularAutomata &GetInstance() {
+
+	static CellularAutomata &GetInstance()
+	{
 		static CellularAutomata instance;
 		return instance;
 	}
-	CellularAutomata(CellularAutomata const&)	= delete;
-	void operator=(CellularAutomata const&)		= delete;
 
-	~CellularAutomata();
+	CellularAutomata(CellularAutomata const&)		= delete;
+	void operator=(CellularAutomata const&)			= delete;
 
-	inline void				SetGenParams(int i, int j)		
-							{ mGenParams->WallNeighbours1 = i; mGenParams->WallNeighbours2 = j; }
+	~CellularAutomata()
+	{
+		//for (int i = 0; i < GetSizeY(); i++) {
+		//	delete cave[i];
+		//	delete cave2[i];
+		//}
+		//delete cave;
+		//delete cave2;
+	} 
 
-	inline void				SetGenParamsSet(int i, int j)	
-							{ mGenParamsSet->WallNeighbours1 = i, mGenParamsSet->WallNeighbours2 = j; }
-	
-	// Randomize if a tile is open or not in the cave.
-	// This is based upon probability. Higher value is equal to
-	// a higher chance the space is a wall.
-	inline int				RandomizeCells() { return (std::rand() % 100 < mFillProbability ? WALL : FLOOR); }
+	// Set functions
+	inline void		SetSizeX(int x)					{ mSizeX = x; }
+	inline void		SetSizeY(int y)					{ mSizeY = y; }
+	inline void		SetBirthLimit(int x)			{ mBirthLimit = x; }
+	inline void		SetDeathLimit(int x)			{ mDeathLimit = x; }
+	inline void		SetGenerations(int x)			{ mGenerations = x; }
+	inline void		SetChanceToStayAlive(int x)		{ mChanceToStayAlive = x; }
+	inline void		SetTimeToGenerate(double x)		{ mTimeToGenerate = x; }
+	inline void		SetCavesToGenerate(int x)		{ mCavesToGenerate = x; }
+	inline void		SetCavesGenerated(int x)		{ mCavesGenerated = x; }
+	// Get functions
+	inline int		GetSizeX() const				{ return mSizeX; }
+	inline int		GetSizeY() const				{ return mSizeY; }
+	inline int		GetBirthLimit() const			{ return mBirthLimit; }
+	inline int		GetDeathLimit() const			{ return mDeathLimit; }
+	inline int		GetGenerations() const			{ return mGenerations; }
+	inline int		GetChanceToStayAlive() const	{ return mChanceToStayAlive; }
+	inline int		GetCavesToGenerate() const		{ return mCavesToGenerate; }
+	inline int		GetCavesGenerated() const		{ return mCavesGenerated; }
+	inline double	GetTimeToGenerate() const		{ return mTimeToGenerate; }
 
-	// Some GetFunctions that might come in handy.
-	inline int				GetSizeX() const { return mSizeX; }
-	inline int				GetSizeY() const { return mSizeY; }
-	inline int				GetFillProbability() const { return mFillProbability; }
-	inline int				GetWallNeighbours1() const { return mGenParams->WallNeighbours1; }
-	inline int				GetWallNeighbours2() const { return mGenParams->WallNeighbours2; }
+	int				CountLivingNeighbours(int x, int y);
 
-	// TODO(Kim): Implement Set-functions.
-	void					SetWallNeighbours1(int x) { mGenParams->WallNeighbours1 = x; }
-	void					SetWallNeighbours2(int x) { mGenParams->WallNeighbours2 = x; }
-	void					SetXSize(int x) { mSizeX = x; }
-	void					SetYSize(int x) { mSizeY = x; }
-	void					SetFillProbablity(int x = 50) { mFillProbability = x; }
-	// Init the array, and randomize each element in the array.
-	// Also sets a wall around the maze.
-	void					Init(int wallneighbours1, int wallneighbours2,
-								 int sizeX, int sizeY,
-								 int fillProbability);
+	void			Init(int sizeX = 20, int sizeY = 20, 
+						 int birthLimit = 4, int deathLimit = 3, 
+						 int generations = 2, int changeToStayAlive = 40,
+						 int numOfCavesToGenerate = 1, unsigned int seed = 1);
 
-	void					Generate();
+	void			PrintCave();
+	void			RandomizeCave();
+	void			EmptyCave();
+
+	void			StepInGeneration();
+	void			GenerateCave();
+	void			SaveCave();
+	void			LifeCycle();
 };
 
 #endif

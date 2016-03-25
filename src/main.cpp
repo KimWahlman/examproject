@@ -5,8 +5,9 @@
 //#include <cstdlib>
 //#include <Windows.h>
 #include "CellularAutomata\CellularAutomata.h"
-#include "CellularAutomata\CAtest.h"
+#include "DLA\DLA.h"
 #include "Misc\misc.h"
+#include "SFMLStuff.h"
 // 100 000 = ~50 sec
 //  95 000 = ~40 sec
 //  90 000 = ~18 sec
@@ -14,24 +15,29 @@
 
 int main()
 {
-	FileReader fr;
-	fr.ReadFromFile(7);
-	// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Seed
-	CATest::GetInstance().Init(	fr.FetchData(0),
-								fr.FetchData(1),
-								fr.FetchData(2),
-								fr.FetchData(3),
-								fr.FetchData(4),
-								fr.FetchData(5),
-								fr.FetchData(6) );
-	//Sleep(3000);
-	CATest::GetInstance().GenerateCave();
-	CATest::GetInstance().SaveCave();
-	//CATest::GetInstance().PrintCave();
-	//while (true) {
-	//	
-	//	//CATest::GetInstance().PrintCave();
-	//}
+	/// - CA Example Usage -
+	FileReader::GetInstance().ReadFromFile("data.txt", 7);
+	//
+	//// SizeX, SizeY, BirthLimit, DeathLimit, Generations, Initial Survivial Rate, Caves to Generate, Seed
+	//CellularAutomata::GetInstance().Init( FileReader::GetInstance().FetchIntData(0),
+	//							FileReader::GetInstance().FetchIntData(1),
+	//							FileReader::GetInstance().FetchIntData(2),
+	//							FileReader::GetInstance().FetchIntData(3),
+	//							FileReader::GetInstance().FetchIntData(4),
+	//							FileReader::GetInstance().FetchIntData(5),
+	//							FileReader::GetInstance().FetchIntData(6),
+	//							FileReader::GetInstance().FetchIntData(7) );
+	//
+	//CellularAutomata::GetInstance().LifeCycle();
+	//Calculations::GetInstance().FindTime(std::to_string(CellularAutomata::GetInstance().GetSizeX()) + "x" + std::to_string(CellularAutomata::GetInstance().GetSizeY()) + "_data.txt", CellularAutomata::GetInstance().GetSizeX(), CellularAutomata::GetInstance().GetSizeY(), FileReader::GetInstance().FetchIntData(6));
+	// - CA Example Usage -
+
+	// - DLA Example Usage -
+	DLA::GetInstance().LifeCycle();
+	Calculations::GetInstance().FindTime(std::to_string(DLA::GetInstance().GetSizeX()) + "x" + std::to_string(DLA::GetInstance().GetSizeY()) + "_data.txt", DLA::GetInstance().GetSizeX(), DLA::GetInstance().GetSizeY(), FileReader::GetInstance().FetchIntData(6));
+	/// - DLA Example Usage -
+	MessyClass::GetInstance().Init();
+	MessyClass::GetInstance().Run();
 	std::cin.get();
 	return 0;
 
