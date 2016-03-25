@@ -29,11 +29,12 @@ int main()
 	//							FileReader::GetInstance().FetchIntData(7) );
 	//
 	//CellularAutomata::GetInstance().LifeCycle();
-	//Calculations::GetInstance().FindTime(std::to_string(CellularAutomata::GetInstance().GetSizeX()) + "x" + std::to_string(CellularAutomata::GetInstance().GetSizeY()) + "_data.txt", CellularAutomata::GetInstance().GetSizeX(), CellularAutomata::GetInstance().GetSizeY());
+	//Calculations::GetInstance().FindTime(std::to_string(CellularAutomata::GetInstance().GetSizeX()) + "x" + std::to_string(CellularAutomata::GetInstance().GetSizeY()) + "_data.txt", CellularAutomata::GetInstance().GetSizeX(), CellularAutomata::GetInstance().GetSizeY(), FileReader::GetInstance().FetchIntData(6));
 	/// - CA Example Usage -
 
 	/// - DLA Example Usage -
 	DLA::GetInstance().LifeCycle();
+	Calculations::GetInstance().FindTime(std::to_string(DLA::GetInstance().GetSizeX()) + "x" + std::to_string(DLA::GetInstance().GetSizeY()) + "_data.txt", DLA::GetInstance().GetSizeX(), DLA::GetInstance().GetSizeY(), FileReader::GetInstance().FetchIntData(6));
 	/// - DLA Example Usage -
 	std::cin.get();
 	return 0;
