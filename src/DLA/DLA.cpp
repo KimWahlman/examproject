@@ -3,6 +3,7 @@
 #include <ctime>
 #include <iostream>
 #include "../Misc/misc.h"
+#include "../SFMLStuff.h"
 
 Builder::Builder(int sx, int sy, int px, int py) 
 {
@@ -63,8 +64,6 @@ void DLA::Init(int sizeX, int sizeY)
 {
 	// Do we have a specified seed or will we randomize?
 	// Randomize
-	std::srand((unsigned int)time(NULL));
-
 	SetSizeX(sizeX);
 	SetSizeY(sizeY);
 	SetAmountOfBuilders(0);
@@ -130,6 +129,7 @@ void DLA::StepInGeneration()
 		//mBuilders[0]->SetPosXY(GetSizeX(), GetSizeY());
 		while (GetAllocatedBlocks() <= GetDigSize())
 		{
+			//std::srand((unsigned int)time(NULL));
 			// DEBUG TEXT -v
 			//system("cls");
 			//PrintCave();
@@ -139,7 +139,9 @@ void DLA::StepInGeneration()
 			// DEBUG TEXT -^
 			for (int i = 0; i < GetAmountOfBuilders(); i++)
 			{
-				mBuilders[i]->SetDirection(std::rand() % 8);
+				//std::srand((unsigned int)time(0));
+				// (double)rand() / ((double)RAND_MAX + 1.0)) * (max - min + 1) + min
+				mBuilders[i]->SetDirection(std::rand() % 9);
 				// Norr Y-led
 				if (mBuilders[i]->GetDirection() == 0 && mBuilders[i]->GetPosY() > 0)
 				{
@@ -224,7 +226,7 @@ void DLA::StepInGeneration()
 				}
 				// Ensure that builder is touching an existing spot
 				if ((mBuilders[i]->GetPosX() < (GetSizeX() - 1) && mBuilders[i]->GetPosY() < (GetSizeY() - 1) &&
-					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= (GetDigSize() / 10));
+					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= (GetDigSize() / 8));
 				else 
 					{ FlushBuilders();	SpawnBuilder();	}
 			}
@@ -286,7 +288,7 @@ void DLA::LifeCycle()
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
-
+		MessyClass::GetInstance().Run();
 		//std::cin.get();
 		//system("cls");
 	}
