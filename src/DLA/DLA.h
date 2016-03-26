@@ -120,6 +120,7 @@ public:
 	inline int				GetCavesToGenerate() const { return mCavesToGenerate; }
 
 	inline double			GetTimeToGenerate() { return mTimeToGenerate; }
+	inline char**			GetCave() { return cave; }
 };
 
 #endif

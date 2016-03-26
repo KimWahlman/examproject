@@ -7,6 +7,7 @@
 #include "CellularAutomata\CellularAutomata.h"
 #include "DLA\DLA.h"
 #include "Misc\misc.h"
+#include "SFMLStuff.h"
 // 100 000 = ~50 sec
 //  95 000 = ~40 sec
 //  90 000 = ~18 sec
@@ -14,7 +15,7 @@
 
 int main()
 {
-
+	MessyClass::GetInstance().Init();
 	/// - CA Example Usage -
 	FileReader::GetInstance().ReadFromFile("data.txt", 7);
 	//
@@ -30,12 +31,13 @@ int main()
 	//
 	//CellularAutomata::GetInstance().LifeCycle();
 	//Calculations::GetInstance().FindTime(std::to_string(CellularAutomata::GetInstance().GetSizeX()) + "x" + std::to_string(CellularAutomata::GetInstance().GetSizeY()) + "_data.txt", CellularAutomata::GetInstance().GetSizeX(), CellularAutomata::GetInstance().GetSizeY(), FileReader::GetInstance().FetchIntData(6));
-	/// - CA Example Usage -
+	// - CA Example Usage -
 
-	/// - DLA Example Usage -
+	// - DLA Example Usage -
 	DLA::GetInstance().LifeCycle();
 	Calculations::GetInstance().FindTime(std::to_string(DLA::GetInstance().GetSizeX()) + "x" + std::to_string(DLA::GetInstance().GetSizeY()) + "_data.txt", DLA::GetInstance().GetSizeX(), DLA::GetInstance().GetSizeY(), FileReader::GetInstance().FetchIntData(6));
 	/// - DLA Example Usage -
+
 	std::cin.get();
 	return 0;
 

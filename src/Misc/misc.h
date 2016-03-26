@@ -31,10 +31,10 @@ public:
 	{
 		if (numOfLines == 0)
 		{
-			std::cout << "Line number must be higher than 0.";
+			std::cout << "[ " << filename << " ] Line number must be higher than 0.";
 			return;
 		}
-
+		
 		std::ifstream file(filename.c_str());
 		if (file.is_open())
 		{
@@ -47,6 +47,7 @@ public:
 		}
 		else
 		{
+			file.close();
 			std::cout << "Couldn't read file!\n";
 			std::cin.get();
 			exit(0);
