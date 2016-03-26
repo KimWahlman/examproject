@@ -5,14 +5,8 @@
 
 class MessyClass
 {
-	sf::RenderWindow mWindow;
-	sf::View mView;
 	char** drawFluff;
-	sf::RectangleShape mWhite;
-	float mCurrX, mCurrY, mCurrZoom;
-	int mCaveSizeX, mCaveSizeY;
-	bool newSize;
-
+	sf::Image img;
 	MessyClass() { }
 public:
 	~MessyClass() { }
@@ -24,12 +18,10 @@ public:
 	MessyClass(MessyClass const&) = delete;
 	void operator=(MessyClass const&) = delete;
 
-	void Init(int sizeX = 1024, int sizeY = 768);
-	void DrawWindow();
+	void Init();
 	void Run();
 	void FetchData();
-	void DrawMap();
-	void Keyboard();
+	void SaveImage();
 };
 
 #endif
