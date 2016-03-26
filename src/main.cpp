@@ -15,6 +15,7 @@
 
 int main()
 {
+	MessyClass::GetInstance().Init();
 	/// - CA Example Usage -
 	FileReader::GetInstance().ReadFromFile("data.txt", 7);
 	//
@@ -36,8 +37,7 @@ int main()
 	DLA::GetInstance().LifeCycle();
 	Calculations::GetInstance().FindTime(std::to_string(DLA::GetInstance().GetSizeX()) + "x" + std::to_string(DLA::GetInstance().GetSizeY()) + "_data.txt", DLA::GetInstance().GetSizeX(), DLA::GetInstance().GetSizeY(), FileReader::GetInstance().FetchIntData(6));
 	/// - DLA Example Usage -
-	MessyClass::GetInstance().Init();
-	MessyClass::GetInstance().Run();
+
 	std::cin.get();
 	return 0;
 
