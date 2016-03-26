@@ -15,7 +15,7 @@
 
 int main()
 {
-	MessyClass::GetInstance().Init();
+	
 	/// - CA Example Usage -
 	FileReader::GetInstance().ReadFromFile("data.txt", 7);
 	//

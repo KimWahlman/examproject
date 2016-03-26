@@ -6,7 +6,8 @@
 class MessyClass
 {
 	char** drawFluff;
-	sf::Image img;
+	int caveX, caveY;
+	sf::Image* img;
 	MessyClass() { }
 public:
 	~MessyClass() { }
@@ -18,10 +19,10 @@ public:
 	MessyClass(MessyClass const&) = delete;
 	void operator=(MessyClass const&) = delete;
 
-	void Init();
-	void Run();
-	void FetchData();
-	void SaveImage();
+	void Init(int cx, int cy);
+	void Run(char** cave, int num);
+	void FetchData(char** cave);
+	void SaveImage(int num, char** cave);
 };
 
 #endif
