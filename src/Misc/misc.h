@@ -61,11 +61,11 @@ public:
 	{
 		if (CreateDirectoryA("Caves", NULL))
 		{
-			std::cout << "Created Directory!";
+			std::cout << "Created \"Caves\" Directory!\n";
 			Sleep(100);
 		}
 
-		double temp = time;
+		//double temp = time;
 		std::ofstream file("caves/" + std::to_string(x) + "x" + std::to_string(y) + "_cave_" + std::to_string(caveNumber) + ".txt");
 		if (file.is_open())
 		{
@@ -91,7 +91,7 @@ public:
 
 		if (file.is_open())
 		{
-			file << std::fixed << std::setprecision(precision) << temp << "\n";
+			file << std::fixed << std::setprecision(precision) << time << "\n";
 			file.close();
 			file.clear();
 		}

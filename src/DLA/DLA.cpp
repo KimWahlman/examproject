@@ -17,7 +17,7 @@ Builder::Builder(int sx, int sy, int px, int py)
 
 	mDirection = 0;
 	mCorridorLenght = 0;
-	mOrthogonallMovementAllowed = true;
+	mOrthogonallMovementAllowed = false;
 }
 
 Builder::~Builder()
@@ -226,9 +226,12 @@ void DLA::StepInGeneration()
 				}
 				// Ensure that builder is touching an existing spot
 				if ((mBuilders[i]->GetPosX() < (GetSizeX() - 1) && mBuilders[i]->GetPosY() < (GetSizeY() - 1) &&
-					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= (GetDigSize() / 8));
+					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= (GetDigSize()));
 				else 
-					{ FlushBuilders();	SpawnBuilder();	}
+				{ 
+					FlushBuilders();
+					SpawnBuilder();	
+				}
 			}
 		}
 		SetAllocatedBlocks(0);
@@ -270,14 +273,15 @@ void DLA::PrintCave()
 void DLA::LifeCycle()
 {
 	Init(FileReader::GetInstance().FetchIntData(0), FileReader::GetInstance().FetchIntData(1));
+	MessyClass::GetInstance().Init(GetSizeX(), GetSizeY());
 	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
 	{
+		
 		/////////////////////////////////////////////
 		// Set all locations in the map to walls ////
 		// This is just to remove junk-values.
 		EmptyCave();
 		SpawnBuilder();
-		
 		/////////////////////////////////////////////
 		// Generate the cave(s) /////////////////////
 		GenerateCave();
@@ -288,7 +292,7 @@ void DLA::LifeCycle()
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
-		MessyClass::GetInstance().Run();
+		MessyClass::GetInstance().SaveImage(GetCavesGenerated(), GetCave());
 		//std::cin.get();
 		//system("cls");
 	}
