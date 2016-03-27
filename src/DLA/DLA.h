@@ -95,7 +95,7 @@ public:
 	void					FlushBuilders();
 	void					CountFloorTiles();
 	void					SaveCave();
-
+	void					AllocateMemory();
 	inline void				IncrementAllocatedBlocks() { mAllocatedBlocks++; }
 
 	// Setters

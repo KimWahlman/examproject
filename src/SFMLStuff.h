@@ -7,7 +7,7 @@ class MessyClass
 {
 	char** drawFluff;
 	int caveX, caveY;
-	sf::Image* img;
+	sf::Image img;
 	MessyClass() { }
 public:
 	~MessyClass() { }
