@@ -17,7 +17,7 @@ Builder::Builder(int sx, int sy, int px, int py)
 
 	mDirection = 0;
 	mCorridorLenght = 0;
-	mOrthogonallMovementAllowed = false;
+	mOrthogonallMovementAllowed = true;
 }
 
 Builder::~Builder()
@@ -33,8 +33,32 @@ Builder::~Builder()
 	FlushBuilders();
 }
 
+ void DLA::Init(int sizeX, int sizeY)
+ {
+	 // Do we have a specified seed or will we randomize?
+	 // Randomize
+	 SetSizeX(sizeX);
+	 SetSizeY(sizeY);
+	 SetAmountOfBuilders(0);
+	 SetAllocatedBlocks(0);
+	 SetDigSize((GetSizeY() * GetSizeX()) / 2);
+	 //	Sleep(3000);
+	 EmptyCave();
+ }
+
+ void DLA::AllocateMemory()
+ {
+	 cave = new char*[GetSizeY()];
+	 for (int y = 0; y < GetSizeY(); y++) {
+		cave[y] = new char[GetSizeX()+1];
+		cave[y][GetSizeX()] = '\0';
+	 }
+ }
+
  void DLA::EmptyCave()
  {
+	 delete[] cave;
+	 AllocateMemory();
 	 for (int y = 0; y < GetSizeY(); y++)
 		 for (int x = 0; x < GetSizeX(); x++)
 			 cave[y][x] = '#';
@@ -54,28 +78,12 @@ Builder::~Builder()
 	 int temp = GetAmountOfBuilders();
 	 for (int i = 0; i < temp; i++)
 	 {
-		 delete mBuilders[i];
-		 mBuilders.pop_back();
-		 SetAmountOfBuilders(GetAmountOfBuilders() - 1);
+		 delete mBuilders[i];	 
 	 }
+	 mBuilders.clear();
+	 //mBuilders.pop_back();
+	 SetAmountOfBuilders(0);
  }
-
-void DLA::Init(int sizeX, int sizeY)
-{
-	// Do we have a specified seed or will we randomize?
-	// Randomize
-	SetSizeX(sizeX);
-	SetSizeY(sizeY);
-	SetAmountOfBuilders(0);
-	SetAllocatedBlocks(0);
-	SetDigSize((GetSizeY() * GetSizeX())/2);
-	// Allocate memory for the map. //////////////
-	cave = new char*[GetSizeY()];
-	for (int y = 0; y < GetSizeY(); y++)
-		cave[y] = new char[GetSizeX()];
-//	Sleep(3000);
-	EmptyCave();
-}
 
 void DLA::SpawnBuilder(int amountToSpawn) 
 {
@@ -129,7 +137,7 @@ void DLA::StepInGeneration()
 		//mBuilders[0]->SetPosXY(GetSizeX(), GetSizeY());
 		while (GetAllocatedBlocks() <= GetDigSize())
 		{
-			//std::srand((unsigned int)time(NULL));
+			//
 			// DEBUG TEXT -v
 			//system("cls");
 			//PrintCave();
@@ -141,7 +149,7 @@ void DLA::StepInGeneration()
 			{
 				//std::srand((unsigned int)time(0));
 				// (double)rand() / ((double)RAND_MAX + 1.0)) * (max - min + 1) + min
-				mBuilders[i]->SetDirection(std::rand() % 9);
+				mBuilders[i]->SetDirection(std::rand() % 4);
 				// Norr Y-led
 				if (mBuilders[i]->GetDirection() == 0 && mBuilders[i]->GetPosY() > 0)
 				{
@@ -226,7 +234,7 @@ void DLA::StepInGeneration()
 				}
 				// Ensure that builder is touching an existing spot
 				if ((mBuilders[i]->GetPosX() < (GetSizeX() - 1) && mBuilders[i]->GetPosY() < (GetSizeY() - 1) &&
-					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= (GetDigSize()));
+					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1) && mBuilders[i]->GetCorridorLenght() <= (GetDigSize() / 50000));
 				else 
 				{ 
 					FlushBuilders();
@@ -272,6 +280,7 @@ void DLA::PrintCave()
 
 void DLA::LifeCycle()
 {
+	std::srand((unsigned int)time(NULL));
 	Init(FileReader::GetInstance().FetchIntData(0), FileReader::GetInstance().FetchIntData(1));
 	MessyClass::GetInstance().Init(GetSizeX(), GetSizeY());
 	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
@@ -291,7 +300,11 @@ void DLA::LifeCycle()
 
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
+		Timer t;
+		t.StartTimer();
 		SaveCave();
+		t.StopTimer();
+		std::cout << t.GetDuration() << "ms\n";
 		MessyClass::GetInstance().SaveImage(GetCavesGenerated(), GetCave());
 		//std::cin.get();
 		//system("cls");

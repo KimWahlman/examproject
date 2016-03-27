@@ -72,11 +72,11 @@ public:
 			//file << "Time to generate: " << std::fixed << std::setprecision(precision) << temp << " ms\n";
 			for (int i = 0; i < y; i++)
 			{
-				for (int j = 0; j < x; j++)
-				{
-					file << map[i][j];
-				}
-				file << "\n";
+				/*for (int j = 0; j < y; j++)
+				{*/
+					file << map[i]/*[j]*/;
+					file << "\n";
+				/*}*/
 			}
 			file.close();
 			file.clear();

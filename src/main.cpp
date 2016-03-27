@@ -15,7 +15,6 @@
 
 int main()
 {
-	
 	/// - CA Example Usage -
 	FileReader::GetInstance().ReadFromFile("data.txt", 7);
 	//
