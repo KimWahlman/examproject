@@ -28,17 +28,18 @@ void MessyClass::SaveImage(int num, char** cave)
 
 	for (int y = 0; y < caveY; y++) {
 		for (int x = 0; x < caveX; x++) {
-			//if (cave[x][y] == '.') {
-			//	//temp[(y + x * caveY) * 4 + 0] = 255;
-			//	//temp[(y + x * caveY) * 4 + 1] = 255;
-			//	//temp[(y + x * caveY) * 4 + 2] = 255;
-			//	//temp[(y + x * caveY) * 4 + 3] = 255;
-			//}
-			if (cave[x][y] == '#') {
-				temp[(y + x * caveY) * 4 + 0] = 0;
-				temp[(y + x * caveY) * 4 + 1] = 0;
-				temp[(y + x * caveY) * 4 + 2] = 0;
-				//temp[(y + x * caveY) * 4 + 3] = 255;
+			if (cave[y][x] == '#') {
+				temp[(x + y * caveX) * 4 + 0] = 0;
+				temp[(x + y * caveX) * 4 + 1] = 0;
+				temp[(x + y * caveX) * 4 + 2] = 0;
+			}
+
+			// Set center tile to red
+			if (y == (caveY / 2) && x == (caveX / 2))
+			{
+				temp[(x + y * caveX) * 4 + 0] = 255;
+				temp[(x + y * caveX) * 4 + 1] = 0;
+				temp[(x + y * caveX) * 4 + 2] = 0;
 			}
 		}
 	}
