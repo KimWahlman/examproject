@@ -1,9 +1,13 @@
 #include "CellularAutomata.h"
+#include "../SFMLStuff.h"
 #include <random>
 #include <ctime>
 #include <chrono>
 #include <iostream>
-//#include <Windows.h>
+
+#define FLOOR '.'
+#define WALL '#'
+
 void CellularAutomata::Init(int sizeX, int sizeY, int birthLimit, int deathLimit, int generations, int changeToStayAlive, int numOfCavesToGenerate, unsigned int seed)
 {
 	// Do we have a specified seed or will we randomize?
@@ -36,6 +40,10 @@ void CellularAutomata::Init(int sizeX, int sizeY, int birthLimit, int deathLimit
 
 void CellularAutomata::LifeCycle()
 {
+	FILETIME	prevSysKernel, prevSysUser,
+				prevProcKernel, prevProcUser;
+	float		usage = 0.0f;
+	MessyClass::GetInstance().Init(GetSizeX(), GetSizeY());
 	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
 	{
 		/////////////////////////////////////////////
@@ -49,12 +57,17 @@ void CellularAutomata::LifeCycle()
 
 		/////////////////////////////////////////////
 		// Generate the cave(s) /////////////////////
+		CPUUsage c;
+		usage = c.GetCPUUsage(&prevSysKernel, &prevSysUser, &prevProcKernel, &prevProcUser, true);
 		GenerateCave();
+		usage = c.GetCPUUsage(&prevSysKernel, &prevSysUser, &prevProcKernel, &prevProcUser);
+		FileReader::GetInstance().WriteToFile(std::to_string(GetSizeX()) + "x" + std::to_string(GetSizeY()) + "_CPUUsage.txt", "", usage, 2);
 		//PrintCave();
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
 		//
+		MessyClass::GetInstance().SaveImage(GetCavesGenerated(), GetCave());
 	}
 	std::cout << GetCavesGenerated() << "/" << GetCavesToGenerate() << " caves generated and saved.\n";
 }
@@ -80,8 +93,8 @@ void CellularAutomata::EmptyCave()
 	for (int y = 0; y < GetSizeY(); y++)
 		for (int x = 0; x < GetSizeX(); x++) 
 		{
-			cave[y][x] = '.';
-			cave2[y][x] = '.';
+			cave[y][x] = WALL;
+			cave2[y][x] = WALL;
 		}
 }
 
@@ -89,9 +102,12 @@ void CellularAutomata::EmptyCave()
 void CellularAutomata::RandomizeCave()
 {
 	for (int y = 0; y < GetSizeY(); y++)
-		for (int x = 0; x < GetSizeX(); x++)
-			if (std::rand() % 100 + 1 < GetChanceToStayAlive())
-				cave[y][x] = '#';
+		for (int x = 0; x < GetSizeX(); x++) {
+			if ((std::rand() % 101 < GetChanceToStayAlive())) {
+				cave[y][x] = FLOOR; //
+			}
+		}
+		
 }
 
 // Debug-function to display the cave.
@@ -145,7 +161,7 @@ int CellularAutomata::CountLivingNeighbours(int x, int y)
 			if (i == 0 && j == 0); // We need to avoid looking on the current tile!
 			else if (XNeighbour < 0 || YNeighbour < 0 || XNeighbour >= GetSizeX() || YNeighbour >= GetSizeY())
 				numOfLivingNeighbours++;
-			else if (cave[YNeighbour][XNeighbour] == '#')
+			else if (cave[YNeighbour][XNeighbour] == FLOOR) //
 				numOfLivingNeighbours++;
 		}
 	return numOfLivingNeighbours;
@@ -161,20 +177,20 @@ void CellularAutomata::StepInGeneration()
 			int livingNeighbours = CountLivingNeighbours(j, i);
 			//if (i == 1 && j == 2)
 			//	std::cout << livingNeighbours << "\n";
-			if (cave[i][j] == '#') 
+			if (cave[i][j] == FLOOR)
 			{
 				// If current node is a live but too many neighbours are dead, kill it.
 				if (livingNeighbours < GetDeathLimit())
-					cave2[i][j] = '.';
+					cave2[i][j] = WALL;
 				else
-					cave2[i][j] = '#';
+					cave2[i][j] = FLOOR; //
 			}
 			else// if(cave[i][j] == '#')
 			{
 				if(livingNeighbours > GetBirthLimit())
-					cave2[i][j] = '#';
+					cave2[i][j] = FLOOR; //
 				else
-					cave2[i][j] = '.';
+					cave2[i][j] = WALL;
 			}
 		}
 	}
