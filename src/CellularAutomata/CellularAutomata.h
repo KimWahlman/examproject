@@ -60,6 +60,7 @@ public:
 	inline int		GetCavesToGenerate() const		{ return mCavesToGenerate; }
 	inline int		GetCavesGenerated() const		{ return mCavesGenerated; }
 	inline double	GetTimeToGenerate() const		{ return mTimeToGenerate; }
+	inline char**	GetCave() const					{ return cave; }
 
 	int				CountLivingNeighbours(int x, int y);
 
