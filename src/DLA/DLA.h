@@ -63,14 +63,18 @@ class DLA
 							mDigSize,
 							mDigged,
 							mCavesGenerated,
-							mCavesToGenerate;
+							mCavesToGenerate,
+							mBTemp,
+							mBCurr;
 
 	double					mTimeToGenerate;
+
+	bool					mForcedStop;
 
 	char**					cave;
 	Builder*				builder;				// 
 	std::vector<Builder*>	mBuilders;				// Container for builders.
-	
+	Builder					mBuilder;
 	DLA() { }
 
 	void					FrameCave();
@@ -107,6 +111,7 @@ public:
 	inline void				SetDigSize(int x) { mDigSize = x; }
 	inline void				SetCavesGenerated(int x) { mCavesGenerated = x; }
 	inline void				SetTimeToGenerate(double x) { mTimeToGenerate = x; }
+	inline void				SetDigged(int x) { mDigged = 0; }
 
 	// Getters
 	inline int				GetAmountOfBuilders() const { return mSpawnedBuilders; }

@@ -69,7 +69,7 @@ void CellularAutomata::LifeCycle()
 		//
 		MessyClass::GetInstance().SaveImage(GetCavesGenerated(), GetCave());
 	}
-	std::cout << GetCavesGenerated() << "/" << GetCavesToGenerate() << " caves generated and saved.\n";
+	std::cout << "Generation completed!\n\nPress enter to exit program...\n";
 }
 
 // Create walls on all edges of the map.
