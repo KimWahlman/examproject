@@ -40,7 +40,7 @@ Builder::Builder(int sx, int sy, int px, int py)
 
 	mDirection = 0;
 	mCorridorLenght = 0;
-	mOrthogonallMovementAllowed = ORTHOGONALOK;
+	mOrthogonallMovementAllowed = (ORTHOGONALOK == 1) ? true:false;
 }
 
 Builder::~Builder()
@@ -281,7 +281,6 @@ void DLA::StepInGeneration()
 
 				if (mBuilders[i]->GetCorridorLenght() >= (COORIDORLENGHT))
 				{
-					std::cout << "CurrentCorridorLen = "<< mBuilders[i]->GetCorridorLenght() << ", MaxCorridorLen = " << COORIDORLENGHT << "\n";
 					FlushBuilders();
 					SpawnBuilder();
 				}
@@ -297,8 +296,8 @@ void DLA::StepInGeneration()
 				}
 			}
 		}
-		CountFloorTiles();
-		std::cout << "FloorTiles = " << mDigged << "\n";
+		//CountFloorTiles();
+		//std::cout << "FloorTiles = " << mDigged << "\n";
 		SetAllocatedBlocks(0);
 	}
 }
@@ -365,7 +364,7 @@ void DLA::LifeCycle()
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
 		MessyClass::GetInstance().SaveImage(GetCavesGenerated(), GetCave());
-		std::cout << "[ CAVE " << GetCavesGenerated() << " COMPELTED ]\n";
+		std::cout << "[ CAVE " << GetCavesGenerated() << " COMPLETED ]\n";
 	}
 	CountFloorTiles();
 	std::cout << "Digged blocks = " << GetDigged() << " / " << GetDigSize() << "\n";
