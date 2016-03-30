@@ -104,6 +104,7 @@ Builder::~Builder()
 		 for (int j = 0; j < GetSizeX() - 1; j++)
 			 if (cave[i][j] == '.')
 				 mDigged++;
+	 std::cout << "mDigged == " << mDigged << "\n";
  }
 
  void DLA::FlushBuilders()
@@ -417,10 +418,11 @@ void DLA::LifeCycle()
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
 		MessyClass::GetInstance().SaveImage(GetCavesGenerated(), GetCave());
-		//CountFloorTiles();
 		//std::cout << "GetCavesToGenerate() = " << GetCavesToGenerate() << "\n";
 		system("CLS");
+		CountFloorTiles();
 		std::cout << "[ CAVE " << GetCavesGenerated() << " / " << GetCavesToGenerate() << " COMPLETED ]\n";// Final builder count \t = " << mBTemp << "\nDigged blocks \t\t = " << GetDigged() << " / " << GetDigSize() << "\n\n";
+		std::cout << "nDigged blocks = " << GetDigged() << " / " << GetDigSize() << "\n\n";
 	}
 	//std::cout << "GetCavesToGenerate() = " << GetCavesToGenerate() << "\n";
 	CPUUsage c;
