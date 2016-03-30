@@ -71,6 +71,7 @@ Builder::~Builder()
 	 EmptyCave();
 	 mBTemp = 0;
 	 mForcedStop = false;
+	 mOpen.clear();
  }
 
  void DLA::AllocateMemory()
@@ -173,6 +174,23 @@ void DLA::SpawnBuilder(int amountToSpawn)
 					yr = (GetSizeY() - 1) / 2;
 				}
 			}
+
+			else if (opt == 3)
+			{
+				if (mOpen.size() < 1) {
+					xr = 1 + std::rand() % (GetSizeX() - 1);
+					yr = 1 + std::rand() % (GetSizeY() - 1);
+				}
+				else
+				{
+					int rand = std::rand() % (mOpen.size() - 1);
+					std::cout << "rand = " << rand << "\n rand + 1 = " << rand + 1 << "\n";
+					std::cin.get();
+					xr = mOpen[rand][0];
+					yr = mOpen[rand][1];
+				}
+			}
+
 			if (xr == 0 || xr == GetSizeX() || yr == 0 || yr == GetSizeY())
 			{
 				std::cout << "Illegal coordinates, will exit! (" << xr << ", " << yr << ")\n";
@@ -182,6 +200,7 @@ void DLA::SpawnBuilder(int amountToSpawn)
 			}
 			mBuilders[i]->SetPosXY(xr, yr);
 		}
+	
 	}
 	//else
 	//{
@@ -211,6 +230,17 @@ void DLA::StepInGeneration()
 							mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 							IncrementAllocatedBlocks();
 							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							int temp[2];
+							temp[0] = mBuilders[i]->GetPosY();
+							temp[1] = mBuilders[i]->GetPosX();
+							mOpen.push_back(temp);
+						}
+						else
+						{
+							/*int rand = std::rand() % (mOpen.size() - 1);
+							int xr = mOpen[rand][0];
+							int yr = mOpen[rand][1];
+							mBuilders[i]->SetPosXY(xr, yr);*/
 						}
 					}
 				}
@@ -224,6 +254,17 @@ void DLA::StepInGeneration()
 							mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 							IncrementAllocatedBlocks();
 							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							/*int temp[2];
+							temp[0] = mBuilders[i]->GetPosY();
+							temp[1] = mBuilders[i]->GetPosX();
+							mOpen.push_back(temp);*/
+						}
+						else
+						{
+							/*int rand = std::rand() % (mOpen.size() - 1);
+							int xr = mOpen[rand][0];
+							int yr = mOpen[rand][1];
+							mBuilders[i]->SetPosXY(xr, yr);*/
 						}
 					}
 				}
@@ -237,6 +278,17 @@ void DLA::StepInGeneration()
 							mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 							IncrementAllocatedBlocks();
 							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							/*int temp[2];
+							temp[0] = mBuilders[i]->GetPosY();
+							temp[1] = mBuilders[i]->GetPosX();
+							mOpen.push_back(temp);*/
+						}
+						else
+						{
+							/*int rand = std::rand() % (mOpen.size() - 1);
+							int xr = mOpen[rand][0];
+							int yr = mOpen[rand][1];
+							mBuilders[i]->SetPosXY(xr, yr);*/
 						}
 					}
 				}
@@ -250,6 +302,17 @@ void DLA::StepInGeneration()
 							mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 							IncrementAllocatedBlocks();
 							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+							/*int temp[2];
+							temp[0] = mBuilders[i]->GetPosY();
+							temp[1] = mBuilders[i]->GetPosX();
+							mOpen.push_back(temp);*/
+						}
+						else
+						{
+							/*int rand = std::rand() % (mOpen.size() - 1);
+							int xr = mOpen[rand][0];
+							int yr = mOpen[rand][1];
+							mBuilders[i]->SetPosXY(xr, yr);*/
 						}
 					}
 				}
@@ -264,6 +327,17 @@ void DLA::StepInGeneration()
 								mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 								IncrementAllocatedBlocks();
 								cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+								/*int temp[2];
+								temp[0] = mBuilders[i]->GetPosY();
+								temp[1] = mBuilders[i]->GetPosX();
+								mOpen.push_back(temp);*/
+							}
+							else
+							{
+								/*int rand = std::rand() % (mOpen.size() - 1);
+								int xr = mOpen[rand][0];
+								int yr = mOpen[rand][1];
+								mBuilders[i]->SetPosXY(xr, yr);*/
 							}
 						}
 					}
@@ -277,6 +351,17 @@ void DLA::StepInGeneration()
 								mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 								IncrementAllocatedBlocks();
 								cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+								/*int temp[2];
+								temp[0] = mBuilders[i]->GetPosY();
+								temp[1] = mBuilders[i]->GetPosX();
+								mOpen.push_back(temp);*/
+							}
+							else
+							{
+								/*int rand = std::rand() % (mOpen.size() - 1);
+								int xr = mOpen[rand][0];
+								int yr = mOpen[rand][1];
+								mBuilders[i]->SetPosXY(xr, yr);*/
 							}
 						}
 					}
@@ -290,6 +375,17 @@ void DLA::StepInGeneration()
 								mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 								IncrementAllocatedBlocks();
 								cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+								/*int temp[2];
+								temp[0] = mBuilders[i]->GetPosY();
+								temp[1] = mBuilders[i]->GetPosX();
+								mOpen.push_back(temp);*/
+							}
+							else
+							{
+								/*int rand = std::rand() % (mOpen.size() - 1);
+								int xr = mOpen[rand][0];
+								int yr = mOpen[rand][1];
+								mBuilders[i]->SetPosXY(xr, yr);*/
 							}
 						}
 					}
@@ -303,6 +399,17 @@ void DLA::StepInGeneration()
 								mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 								IncrementAllocatedBlocks();
 								cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
+								/*int temp[2];
+								temp[0] = mBuilders[i]->GetPosY();
+								temp[1] = mBuilders[i]->GetPosX();
+								mOpen.push_back(temp);*/
+							}
+							else
+							{
+								/*int rand = std::rand() % (mOpen.size() - 1);
+								int xr = mOpen[rand][0];
+								int yr = mOpen[rand][1];
+								mBuilders[i]->SetPosXY(xr, yr);*/
 							}
 						}
 					}
@@ -328,8 +435,14 @@ void DLA::StepInGeneration()
 				else
 				{
 					//std::cout << "Builder outside of map!\nSize of mBuilders = " << mBuilders.size() << "\n";
-					int xr = 1 + std::rand() % (GetSizeX() - 1);
-					int yr = 1 + std::rand() % (GetSizeY() - 1);
+					
+					// TODO: Try and get this to work!
+					int rand = std::rand() % (mOpen.size() - 1);
+					int xr = mOpen[rand][0];
+					int yr = mOpen[rand][1];
+					//std::cout << "xr = " << xr << "\nyr = " << yr << "\n";
+					//int xr = 1 + std::rand() % (GetSizeX() - 1);
+					//int yr = 1 + std::rand() % (GetSizeY() - 1);
 					mBuilders[i]->SetPosXY(xr, yr);
 					//std::cout << "Spawning builder!\n";
 					//std::cout << "2.1 Size of mBuilders = " << mBuilders.size() << "\n";

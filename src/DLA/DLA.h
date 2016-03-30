@@ -68,6 +68,8 @@ class DLA
 							mBTemp,
 							mBCurr;
 
+
+
 	double					mTimeToGenerate;
 
 	bool					mForcedStop;
@@ -75,6 +77,7 @@ class DLA
 	char**					cave;
 	Builder*				builder;				// 
 	std::vector<Builder*>	mBuilders;				// Container for builders.
+	std::vector<int[2]>		mOpen;
 	Builder					mBuilder;
 	DLA() { }
 
