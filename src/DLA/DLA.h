@@ -26,7 +26,8 @@ class Builder {
 							mCorridorLenght;	// How long can a corridor be, might move this to the DLA class.
 							
 
-	bool					mOrthogonallMovementAllowed; // Is orthogonal movement allowed? If it isn't carve a wider cooridor on the diagonal.	
+	bool					mOrthogonallMovementAllowed,	// Is orthogonal movement allowed? If it isn't carve a wider cooridor on the diagonal.	
+							mOutside;						// Is the builder outside the map, then we shall remove it.
 public:
 	Builder(int sx = 1, int sy = 1, int px = 1, int py = 1);
 	~Builder();
@@ -110,8 +111,10 @@ public:
 	inline void				SetAllocatedBlocks(int x) { mAllocatedBlocks = x; }
 	inline void				SetDigSize(int x) { mDigSize = x; }
 	inline void				SetCavesGenerated(int x) { mCavesGenerated = x; }
+	inline void				SetCavesToGenerate(int x) { mCavesToGenerate = x; }
 	inline void				SetTimeToGenerate(double x) { mTimeToGenerate = x; }
 	inline void				SetDigged(int x) { mDigged = 0; }
+	inline void				DeleteBuilder(int x) { }
 
 	// Getters
 	inline int				GetAmountOfBuilders() const { return mSpawnedBuilders; }

@@ -85,9 +85,9 @@ public:
 			std::cout << "Couldn't write to file cave_" + std::to_string(caveNumber) + ".txt\n";
 
 		if (caveNumber == 1)
-			file.open(std::to_string(x) + "x" + std::to_string(y) + "_data.txt");
+			file.open("Data/" + std::to_string(x) + "x" + std::to_string(y) + "_data.txt");
 		else 
-			file.open(std::to_string(x) + "x" + std::to_string(y) + "_data.txt", std::ios_base::app);
+			file.open("Data/" + std::to_string(x) + "x" + std::to_string(y) + "_data.txt", std::ios_base::app);
 
 		if (file.is_open())
 		{
@@ -99,12 +99,18 @@ public:
 			std::cout << "Couldn't write to file " << x << "x" << x << "_data.txt\n";
 	}
 
-	inline void WriteToFile(std::string filename, std::string message = "NULL ", double data = 0.0, int precision = 7)
+	inline void WriteToFile(std::string filename, std::string message = "NULL", double data = 0.0, int precision = 7)
 	{
-		std::ofstream file(filename.c_str(), std::ios_base::app);
+		if (CreateDirectoryA("Data", NULL))
+		{
+			std::cout << "Created \"Data\" Directory!\n";
+			Sleep(100);
+		}
+
+		std::ofstream file("Data/" + filename, std::ios_base::app);
 		if (file.is_open())
 		{
-			file << message << std::fixed << std::setprecision(precision) << data << "%\n";
+			file << message << std::fixed << std::setprecision(precision) << data << "\n";
 			file.close();
 			file.clear();
 		}
@@ -148,15 +154,16 @@ public:
 			if (FileReader::GetInstance().FetchDoubleData(i) < temp)
 				temp = FileReader::GetInstance().FetchDoubleData(i);
 		}
-		FileReader::GetInstance().WriteToFile("MinTime.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp);
+		FileReader::GetInstance().WriteToFile("MinTime.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp, 8);
 		///////////////////////////////////////////////////////
 		temp = 0.0;
 		for (int i = 0; i < numOfCavesToGenerate; i++)
 		{
+
 			if (FileReader::GetInstance().FetchDoubleData(i) > temp)
 				temp = FileReader::GetInstance().FetchDoubleData(i);
 		}
-		FileReader::GetInstance().WriteToFile("MaxTime.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp);
+		FileReader::GetInstance().WriteToFile("MaxTime.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp, 8);
 		///////////////////////////////////////////////////////
 		temp = 0.0;
 		double total = 0.0;
@@ -257,14 +264,13 @@ public:
 	inline void FindUsage(std::string filename, int x, int y, int numOfCavesToGenerate)
 	{
 		FileReader::GetInstance().ReadFromFile(filename, numOfCavesToGenerate, 1);
-
 		double temp = 100000.0;
 		for (int i = 0; i < numOfCavesToGenerate; i++)
 		{
 			if (FileReader::GetInstance().FetchDoubleData(i) < temp)
 				temp = FileReader::GetInstance().FetchDoubleData(i);
 		}
-		FileReader::GetInstance().WriteToFile("MinCPUUsage.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp);
+		FileReader::GetInstance().WriteToFile("MinCPUUsage.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp, 8);
 		///////////////////////////////////////////////////////
 		temp = 0.0;
 		for (int i = 0; i < numOfCavesToGenerate; i++)
@@ -272,10 +278,10 @@ public:
 			if (FileReader::GetInstance().FetchDoubleData(i) > temp)
 				temp = FileReader::GetInstance().FetchDoubleData(i);
 		}
-		FileReader::GetInstance().WriteToFile("MaxCPUUsage.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp);
+		FileReader::GetInstance().WriteToFile("MaxCPUUsage.txt", std::to_string(x) + "x" + std::to_string(y) + " = ", temp, 8);
 		///////////////////////////////////////////////////////
 		temp = 0.0;
-		double total = 0.0;
+		double total = 0.00000000;
 		for (int i = 0; i < numOfCavesToGenerate; i++)
 		{
 			total += FileReader::GetInstance().FetchDoubleData(i);
