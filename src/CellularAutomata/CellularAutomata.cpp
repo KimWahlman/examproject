@@ -25,7 +25,7 @@ void CellularAutomata::Init(int sizeX, int sizeY, int birthLimit, int deathLimit
 	SetChanceToStayAlive(changeToStayAlive);
 	SetCavesToGenerate(numOfCavesToGenerate);
 	SetCavesGenerated(0);
-
+	SetFloorTiles(0);
 	// Allocate memory for the map. //////////////
 	cave = new char*[GetSizeY()];
 	cave2 = new char*[GetSizeY()];
@@ -36,6 +36,16 @@ void CellularAutomata::Init(int sizeX, int sizeY, int birthLimit, int deathLimit
 		cave2[y] = new char[GetSizeX()];
 	}
 	/////////////////////////////////////////////
+}
+
+void CellularAutomata::CountFloorTiles()
+{
+	mDigged = 0;
+	for (int i = 0; i < GetSizeY() - 1; i++)
+		for (int j = 0; j < GetSizeX() - 1; j++)
+			if (cave2[i][j] == '.')
+				mDigged++;
+	std::cout << "mDigged == " << mDigged << "\n";
 }
 
 void CellularAutomata::LifeCycle()
@@ -68,13 +78,17 @@ void CellularAutomata::LifeCycle()
 		SaveCave();
 		//
 		MessyClass::GetInstance().SaveImage(GetCavesGenerated(), GetCave());
+		CountFloorTiles();
 		system("CLS");
 		std::cout << "[ CAVE " << GetCavesGenerated() << " / " << GetCavesToGenerate() << " COMPLETED ]\n";
+		std::cout << "Floor tiles: " << GetFloorTiles() << " / " << GetSizeX() * GetSizeY() << "\n";
 	}
 	CPUUsage c;
 	c.FindUsage("Data/"+std::to_string(GetSizeX()) + "x" + std::to_string(GetSizeY()) + "_CPUUsage.txt", GetSizeX(), GetSizeY(), GetCavesToGenerate());
 	std::cout << "Generation completed!\n\nPress enter to exit program...\n";
 }
+
+
 
 // Create walls on all edges of the map.
 void CellularAutomata::FrameCave()
@@ -130,10 +144,7 @@ void CellularAutomata::SaveCave()
 {
 	FrameCave();
 	SetCavesGenerated(GetCavesGenerated() + 1);
-	Timer t;
-	t.StartTimer();
 	FileReader::GetInstance().WriteToFile(cave, GetCavesGenerated(), GetSizeY(), GetSizeX(), GetTimeToGenerate());
-	t.StopTimer();
 }
 
 
