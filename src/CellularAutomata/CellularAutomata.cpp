@@ -61,14 +61,18 @@ void CellularAutomata::LifeCycle()
 		usage = c.GetCPUUsage(&prevSysKernel, &prevSysUser, &prevProcKernel, &prevProcUser, true);
 		GenerateCave();
 		usage = c.GetCPUUsage(&prevSysKernel, &prevSysUser, &prevProcKernel, &prevProcUser);
-		FileReader::GetInstance().WriteToFile(std::to_string(GetSizeX()) + "x" + std::to_string(GetSizeY()) + "_CPUUsage.txt", "", usage, 2);
+		FileReader::GetInstance().WriteToFile(std::to_string(GetSizeX()) + "x" + std::to_string(GetSizeY()) + "_CPUUsage.txt", "", usage, 8);
 		//PrintCave();
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
 		SaveCave();
 		//
 		MessyClass::GetInstance().SaveImage(GetCavesGenerated(), GetCave());
+		system("CLS");
+		std::cout << "[ CAVE " << GetCavesGenerated() << " / " << GetCavesToGenerate() << " COMPLETED ]\n";
 	}
+	CPUUsage c;
+	c.FindUsage("Data/"+std::to_string(GetSizeX()) + "x" + std::to_string(GetSizeY()) + "_CPUUsage.txt", GetSizeX(), GetSizeY(), GetCavesToGenerate());
 	std::cout << "Generation completed!\n\nPress enter to exit program...\n";
 }
 

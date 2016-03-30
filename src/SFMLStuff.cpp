@@ -51,6 +51,6 @@ void MessyClass::SaveImage(int num, char** cave)
 	}
 
 	img.create(caveX, caveY, temp);
-	img.saveToFile("img/cave_" + std::to_string(num) + ".png");
+	img.saveToFile("img/" + std::to_string(caveX) + "x" + std::to_string(caveY) + "_cave_" + std::to_string(num) + ".png");
 	delete[] temp;
 }
