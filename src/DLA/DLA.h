@@ -66,7 +66,8 @@ class DLA
 							mCavesGenerated,
 							mCavesToGenerate,
 							mBTemp,
-							mBCurr;
+							mBCurr,
+							mGenerations;
 
 	double					mTimeToGenerate;
 
