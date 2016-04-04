@@ -28,7 +28,6 @@
 #define ORTHOGONALOK			FileReader::GetInstance().FetchIntData(8)
 #define INITIALBUILDERCOUNT		FileReader::GetInstance().FetchIntData(9)
 
-
 Builder::Builder(int sx, int sy, int px, int py) 
 {
 	mStart = new int[2];
@@ -71,6 +70,7 @@ Builder::~Builder()
 	 EmptyCave();
 	 mBTemp = 0;
 	 mForcedStop = false;
+	 mGenerations = 0;
  }
 
  void DLA::AllocateMemory()
@@ -104,7 +104,6 @@ Builder::~Builder()
 		 for (int j = 0; j < GetSizeX() - 1; j++)
 			 if (cave[i][j] == '.')
 				 mDigged++;
-	 std::cout << "mDigged == " << mDigged << "\n";
  }
 
  void DLA::FlushBuilders()
@@ -134,7 +133,7 @@ void DLA::SpawnBuilder(int amountToSpawn)
 		{
 			if (mBTemp < MAXBUILDERCOUNT)
 			{
-				//mBCurr++;
+				mBCurr++;
 				mBTemp++;
 				mBuilders.push_back(new Builder());
 				SetAmountOfBuilders(GetAmountOfBuilders() + 1);
@@ -196,11 +195,18 @@ void DLA::StepInGeneration()
 		SpawnBuilder();
 	else
 	{
+		if (GetAmountOfBuilders() == 0) mForcedStop = true;
 		while (GetAllocatedBlocks() <= GetDigSize() && !mForcedStop)
 		{
+			int dir = 0;
 			for (int i = 0; i < GetAmountOfBuilders(); i++)
 			{
-				mBuilders[i]->SetDirection(std::rand() % 9);
+				if (mBuilders[i]->GetOrtogonalMovementAllowed())
+					dir = 8;
+				else
+					dir = 4;
+
+				mBuilders[i]->SetDirection(std::rand() % dir);
 				// Norr Y-led
 				if (mBuilders[i]->GetDirection() == 0 && mBuilders[i]->GetPosY() > 0)
 				{
@@ -341,6 +347,7 @@ void DLA::StepInGeneration()
 					//std::cout << "2.3 Size of mBuilders = " << mBuilders.size() << "\n";
 				}
 				if (GetAmountOfBuilders() == 0) mForcedStop = true;
+				//std::cout << "Didsomething = " << ((didSomething) ? "yes" : "no") << "\n";
 			}
 		}
 		//CountFloorTiles();
@@ -422,12 +429,13 @@ void DLA::LifeCycle()
 		system("CLS");
 		CountFloorTiles();
 		std::cout << "[ CAVE " << GetCavesGenerated() << " / " << GetCavesToGenerate() << " COMPLETED ]\n";// Final builder count \t = " << mBTemp << "\nDigged blocks \t\t = " << GetDigged() << " / " << GetDigSize() << "\n\n";
-		std::cout << "nDigged blocks = " << GetDigged() << " / " << GetDigSize() << "\n\n";
+		std::cout << "Excavated Blocks  = " << GetDigged() << " / " << GetDigSize() << "\n";
+		std::cout << "Total amount of builders spawned in current cave = " << mBTemp << "\n";
 	}
 	//std::cout << "GetCavesToGenerate() = " << GetCavesToGenerate() << "\n";
 	CPUUsage c;
 	c.FindUsage("Data/" +std::to_string(DLA::GetInstance().GetSizeX()) + "x" + std::to_string(DLA::GetInstance().GetSizeY()) + "_CPUUSAGE.txt", DLA::GetInstance().GetSizeX(), DLA::GetInstance().GetSizeY(), FileReader::GetInstance().FetchIntData(2));
-	std::cout << "Generation completed!\nPress enter to exit program...\n";
+	std::cout << "Total amount of builders spawned in all caves = " << mBCurr << "\n\n"; "Generation completed!\nPress enter to exit program...\n";
 }
 
 void DLA::SaveCave()
