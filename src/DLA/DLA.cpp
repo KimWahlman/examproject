@@ -40,7 +40,7 @@ Builder::Builder(int sx, int sy, int px, int py)
 
 	mDirection = 0;
 	mCorridorLenght = 0;
-	mOrthogonallMovementAllowed = (ORTHOGONALOK == 1) ? true:false;
+	mOrthogonallMovementAllowed = (ORTHOGONALOK == 1);
 }
 
 Builder::~Builder()
@@ -60,14 +60,16 @@ Builder::~Builder()
  {
 	 // Do we have a specified seed or will we randomize?
 	 // Randomize
+	 EmptyCave();
 	 SetSizeX(sizeX);
 	 SetSizeY(sizeY);
+	 AllocateMemory();
 	 SetAmountOfBuilders(0);
 	 SetAllocatedBlocks(0);
 	 SetDigSize(DIGSIZE / MAKEDIGSIZESMALLER);
 	 SetCavesToGenerate(CAVESTOGENERATE);
 	 //	Sleep(3000);
-	 EmptyCave();
+	 
 	 mBTemp = 0;
 	 mForcedStop = false;
 	 mGenerations = 0;
@@ -76,23 +78,29 @@ Builder::~Builder()
  void DLA::AllocateMemory()
  {
 	 cave = new char*[GetSizeY()];
-	 for (int y = 0; y < GetSizeY(); y++) {
+	 for (int y = 0; y < GetSizeY(); y++) 
+	 {
 		cave[y] = new char[GetSizeX()+1];
 		cave[y][GetSizeX()] = '\0';
 	 }
- }
 
- void DLA::EmptyCave()
- {
-	 delete[] cave;
-	 AllocateMemory();
 	 for (int y = 0; y < GetSizeY(); y++)
 		 for (int x = 0; x < GetSizeX(); x++)
 			 cave[y][x] = '#';
+ }
+ 
+ void DLA::EmptyCave()
+ {
+	 for (int y = 0; y < GetSizeY(); y++) 
+	 {
+		 delete[] cave[y];
+	 }
+
+	 delete[] cave;
+
 	 mForcedStop = false;
 	 SetAllocatedBlocks(0);
 	 FlushBuilders();
-	 SetAmountOfBuilders(0);
 	 //mBCurr = 0;
 	 mBTemp = 0;
  }
@@ -110,24 +118,18 @@ Builder::~Builder()
  {
 	 int temp = GetAmountOfBuilders();
 	 for (int i = 0; i < temp; i++)
-	 {
 		 delete mBuilders[i];	 
-	 }
+
+	 std::cout << "Flushed " << temp << " builders.\n";
 	 mBuilders.clear(); 
 	 SetAmountOfBuilders(0);
  } 
 
 void DLA::SpawnBuilder(int amountToSpawn) 
 {
-	//CountFloorTiles();
-	//std::cout << "Max builder count    : " << MAXBUILDERCOUNT << "\n"
-	//	      << "Current builder count: " << GetAmountOfBuilders() << "\n"
-	//		  << "Digged space: " << GetDigged() << "\n";
-	//std::cout << "mBTemp = " << mBTemp << "\n";
 	if (mBTemp < MAXBUILDERCOUNT)
 	{
 		int mx = MAXBUILDERCOUNT;
-		//std::cout << "mx = " << mx << "\n";
 		if (amountToSpawn > mx) amountToSpawn = MAXBUILDERCOUNT;
 		for (int i = 0; i < amountToSpawn; i++)
 		{
@@ -138,12 +140,9 @@ void DLA::SpawnBuilder(int amountToSpawn)
 				mBuilders.push_back(new Builder());
 				SetAmountOfBuilders(GetAmountOfBuilders() + 1);
 			}
-			else {
+			else
 				break;
-			}
 		}
-		// Randomize the startposition for the builder.
-		// It will should never spawn in the "frame" of the cave.
 		for (int i = 0; i < GetAmountOfBuilders(); i++)
 		{
 			int opt = SPAWNMID;
@@ -151,7 +150,6 @@ void DLA::SpawnBuilder(int amountToSpawn)
 			if (opt == 0) {
 				xr = 1 + std::rand() % (GetSizeX() - 1);
 				yr = 1 + std::rand() % (GetSizeY() - 1);
-				//std::cout << "Spawned here (" << xr << ", " << yr << ")\n";
 			}
 			else if(opt == 1)
 			{
@@ -182,11 +180,6 @@ void DLA::SpawnBuilder(int amountToSpawn)
 			mBuilders[i]->SetPosXY(xr, yr);
 		}
 	}
-	//else
-	//{
-	//	//std::cout << "Should finish now!\nmBTemp = " << mBTemp << "\n";
-	//	mForcedStop = true;
-	//}
 }
 
 void DLA::StepInGeneration()
@@ -210,8 +203,7 @@ void DLA::StepInGeneration()
 				// Norr Y-led
 				if (mBuilders[i]->GetDirection() == 0 && mBuilders[i]->GetPosY() > 0)
 				{
-					mBuilders[i]->SetPosY(mBuilders[i]->GetPosY() - 1);
-					
+					mBuilders[i]->SetPosY(mBuilders[i]->GetPosY() - 1);	
 					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
 						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '.') {
 							mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
@@ -251,8 +243,10 @@ void DLA::StepInGeneration()
 				{
 					mBuilders[i]->SetPosX(mBuilders[i]->GetPosX() - 1);
 					
-					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) {
-						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '.') {
+					if (mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() < GetSizeY()) 
+					{
+						if (cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] != '.') 
+						{
 							mBuilders[i]->SetCorridorLenght(mBuilders[i]->GetCorridorLenght() + 1);
 							IncrementAllocatedBlocks();
 							cave[mBuilders[i]->GetPosY()][mBuilders[i]->GetPosX()] = '.';
@@ -260,7 +254,8 @@ void DLA::StepInGeneration()
 					}
 				}
 				// Nordöst X- och Y-led
-				if (mBuilders[i]->GetOrtogonalMovementAllowed()) {
+				if (mBuilders[i]->GetOrtogonalMovementAllowed()) 
+				{
 					if (mBuilders[i]->GetDirection() == 4 && mBuilders[i]->GetPosX() < GetSizeX() && mBuilders[i]->GetPosY() > 0)
 					{
 						mBuilders[i]->SetPosXY(mBuilders[i]->GetPosX() + 1, mBuilders[i]->GetPosY() - 1);
@@ -316,15 +311,9 @@ void DLA::StepInGeneration()
 
 				if (mBuilders[i]->GetCorridorLenght() >= (COORIDORLENGHT))
 				{
-					//FlushBuilders();
-					//std::cout << "Cooridorlenght reached!\nSize of mBuilders = " << mBuilders.size() << "\n";
-					//std::cout << "Spawning builder!\n";
-					//std::cout << "1.1 Size of mBuilders = " << mBuilders.size() << "\n";
-					//mBCurr--;
 					delete mBuilders[i];
 					mBuilders.erase(mBuilders.begin() + i);
 					SetAmountOfBuilders(GetAmountOfBuilders() - 1);
-					//std::cout << "1.2 Size of mBuilders = " << mBuilders.size() << "\n";
 					SpawnBuilder(1);
 				}
 
@@ -333,27 +322,13 @@ void DLA::StepInGeneration()
 					mBuilders[i]->GetPosX() > 1 && mBuilders[i]->GetPosY() > 1));
 				else
 				{
-					//std::cout << "Builder outside of map!\nSize of mBuilders = " << mBuilders.size() << "\n";
 					int xr = 1 + std::rand() % (GetSizeX() - 1);
 					int yr = 1 + std::rand() % (GetSizeY() - 1);
 					mBuilders[i]->SetPosXY(xr, yr);
-					//std::cout << "Spawning builder!\n";
-					//std::cout << "2.1 Size of mBuilders = " << mBuilders.size() << "\n";
-					//delete mBuilders[i];
-					//SetAmountOfBuilders(GetAmountOfBuilders() - 1);
-					//mBuilders.erase(mBuilders.begin() + i);
-					//std::cout << "2.2 Size of mBuilders = " << mBuilders.size() << "\n";
-					//SpawnBuilder(1);
-					//std::cout << "2.3 Size of mBuilders = " << mBuilders.size() << "\n";
 				}
 				if (GetAmountOfBuilders() == 0) mForcedStop = true;
-				//std::cout << "Didsomething = " << ((didSomething) ? "yes" : "no") << "\n";
 			}
 		}
-		//CountFloorTiles();
-		//std::cout << "FloorTiles = " << mDigged << "\n";
-		//std::cout << "mForcedStop = " << mForcedStop << "\n";
-		//std::cin.get();
 		FlushBuilders();
 		SetAllocatedBlocks(0);
 	}
@@ -396,7 +371,7 @@ void DLA::LifeCycle()
 
 	FILETIME	prevSysKernel, prevSysUser,
 				prevProcKernel, prevProcUser;
-	float		usage = 0.0f;
+	double		usage = 0.0;
 
 	Init(XYSIZE);
 	MessyClass::GetInstance().Init(GetSizeX(), GetSizeY());
@@ -408,6 +383,7 @@ void DLA::LifeCycle()
 		// Set all locations in the map to walls ////
 		// This is just to remove junk-values.
 		EmptyCave();
+		AllocateMemory();
 		SpawnBuilder(INITIALBUILDERCOUNT);
 		/////////////////////////////////////////////
 		// Generate the cave(s) /////////////////////
@@ -418,9 +394,9 @@ void DLA::LifeCycle()
 		GenerateCave();
 		t.StopTimer();
 		usage = c.GetCPUUsage(&prevSysKernel, &prevSysUser, &prevProcKernel, &prevProcUser);
+		std::cout << "Usage = " << usage << "\n";
 		SetTimeToGenerate(t.GetDuration());
 		FileReader::GetInstance().WriteToFile(std::to_string(GetSizeX()) + "x" + std::to_string(GetSizeY()) + "_CPUUsage.txt", "", usage, 8);
-
 		/////////////////////////////////////////////
 		// Save the cave(s) in seperate files ///////
 		SaveCave();

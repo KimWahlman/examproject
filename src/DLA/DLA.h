@@ -77,7 +77,10 @@ class DLA
 	Builder*				builder;				// 
 	std::vector<Builder*>	mBuilders;				// Container for builders.
 	Builder					mBuilder;
-	DLA() { }
+	DLA() 
+	{ 
+		SetCavesGenerated(0);
+	}
 
 	void					FrameCave();
 public:
