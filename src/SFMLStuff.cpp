@@ -1,53 +1,58 @@
+#include "Misc\misc.h"
 #include "SFMLStuff.h"
 #include "DLA\DLA.h"
 #include "CellularAutomata\CellularAutomata.h"
 
-void MessyClass::Init()
+void MessyClass::Init(int cx, int cy)
 {
-	drawFluff = new char*[DLA::GetInstance().GetSizeY()];
-	for (int y = 0; y < DLA::GetInstance().GetSizeY(); y++)
-		drawFluff[y] = new char[DLA::GetInstance().GetSizeX()];
-
-	for (int y = 0; y < DLA::GetInstance().GetSizeY(); y++)
-		for (int x = 0; x < DLA::GetInstance().GetSizeX(); x++)
-			drawFluff[y][x] = '#';
+	caveX = cx;
+	caveY = cy;
 }
 
-void MessyClass::Run()
+void MessyClass::Run(char** cave, int num)
 {
-	FetchData();
-	SaveImage();
+	//drawFluff = cave;
+	//FetchData(cave);
+	//SaveImage(num);
 }
 
-void MessyClass::FetchData()
+void MessyClass::FetchData(char** cave)
 {
-	drawFluff = DLA::GetInstance().GetCave();
+	drawFluff = cave;
 }
 
-void MessyClass::SaveImage()
+void MessyClass::SaveImage(int num, char** cave)
 {
-	sf::Uint8* temp;
-	temp = new sf::Uint8[DLA::GetInstance().GetSizeY() * DLA::GetInstance().GetSizeX() * 4];
-	int cx = DLA::GetInstance().GetSizeX(),
-		cy = DLA::GetInstance().GetSizeY();
+ 	sf::Uint8* temp;
+	temp = new sf::Uint8[caveY * caveX * 4];
+	memset(temp, 255, caveY * caveX * 4);
 
-	for (int y = 0; y < cy; y++) {
-		for (int x = 0; x < cx; x++) {
-			if (drawFluff[x][y] == '.') {
-				temp[(y + x * cy) * 4 + 0] = 255;
-				temp[(y + x * cy) * 4 + 1] = 255;
-				temp[(y + x * cy) * 4 + 2] = 255;
-				temp[(y + x * cy) * 4 + 3] = 255;
+	for (int y = 0; y < caveY; y++) {
+		for (int x = 0; x < caveX; x++) {
+			if (cave[y][x] == '#') {
+				temp[(x + y * caveX) * 4 + 0] = 0;
+				temp[(x + y * caveX) * 4 + 1] = 0;
+				temp[(x + y * caveX) * 4 + 2] = 0;
 			}
-			if (drawFluff[x][y] == '#') {
-				temp[(y + x * cy) * 4 + 0] = 0;
-				temp[(y + x * cy) * 4 + 1] = 0;
-				temp[(y + x * cy) * 4 + 2] = 0;
-				temp[(y + x * cy) * 4 + 3] = 255;
+
+			// Set center tile to red
+			if (y == (caveY / 2) && x == (caveX / 2))
+			{
+				temp[(x + y * caveX) * 4 + 0] = 255;
+				temp[(x + y * caveX) * 4 + 1] = 0;
+				temp[(x + y * caveX) * 4 + 2] = 0;
 			}
 		}
 	}
 
-	img.create(DLA::GetInstance().GetSizeX(), DLA::GetInstance().GetSizeY(), temp);
-	img.saveToFile("img/cave_" + std::to_string(DLA::GetInstance().GetCavesGenerated()) + ".png");
+	if (CreateDirectoryA("img", NULL))
+	{
+		std::cout << "Created \"img\" Directory!\n";
+		Sleep(100);
+	}
+
+	img.create(caveX, caveY, temp);
+	img.saveToFile("img/" + std::to_string(caveX) + "x" + std::to_string(caveY) + "_cave_" + std::to_string(num) + ".png");
+	std::cout << "Saved...\n";
+	delete[] temp;
 }

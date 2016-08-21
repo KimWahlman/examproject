@@ -11,7 +11,8 @@ class CellularAutomata {
 					mChanceToStayAlive,			// What is the chance for the cell to stay alive in the beginning?
 					mCavesToGenerate,
 					mCavesGenerated,
-					bogusVariable;
+					bogusVariable,
+					mDigged;
 	double			mTimeToGenerate;
 
 	char			**cave, **cave2;
@@ -50,6 +51,7 @@ public:
 	inline void		SetTimeToGenerate(double x)		{ mTimeToGenerate = x; }
 	inline void		SetCavesToGenerate(int x)		{ mCavesToGenerate = x; }
 	inline void		SetCavesGenerated(int x)		{ mCavesGenerated = x; }
+	inline void		SetFloorTiles(int x)			{ mDigged = x; }
 	// Get functions
 	inline int		GetSizeX() const				{ return mSizeX; }
 	inline int		GetSizeY() const				{ return mSizeY; }
@@ -59,7 +61,11 @@ public:
 	inline int		GetChanceToStayAlive() const	{ return mChanceToStayAlive; }
 	inline int		GetCavesToGenerate() const		{ return mCavesToGenerate; }
 	inline int		GetCavesGenerated() const		{ return mCavesGenerated; }
+	inline int		GetFloorTiles() const			{ return mDigged; }
 	inline double	GetTimeToGenerate() const		{ return mTimeToGenerate; }
+	inline char**	GetCave() const					{ return cave; }
+
+
 
 	int				CountLivingNeighbours(int x, int y);
 
@@ -76,6 +82,7 @@ public:
 	void			GenerateCave();
 	void			SaveCave();
 	void			LifeCycle();
+	void			CountFloorTiles();
 };
 
 #endif
