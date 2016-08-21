@@ -1,3 +1,4 @@
+#include "Misc\misc.h"
 #include "SFMLStuff.h"
 #include "DLA\DLA.h"
 #include "CellularAutomata\CellularAutomata.h"

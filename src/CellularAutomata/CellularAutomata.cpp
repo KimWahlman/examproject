@@ -52,7 +52,7 @@ void CellularAutomata::LifeCycle()
 {
 	FILETIME	prevSysKernel, prevSysUser,
 				prevProcKernel, prevProcUser;
-	float		usage = 0.0f;
+	double		usage = 0.0;
 	MessyClass::GetInstance().Init(GetSizeX(), GetSizeY());
 	for (int i = 0; i < FileReader::GetInstance().FetchIntData(6); i++) // How many caves shall we generate?
 	{

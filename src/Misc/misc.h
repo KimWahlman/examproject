@@ -197,6 +197,7 @@ class CPUUsage
 					mProcCreation, mProcExit, mProcKernel, mProcUser,
 					mPrevSysKernel, mPrevSysUser, mPrevProcKernel, mPrevProcUser;
 	float			mUsage, mMin, mMax, mTemp;
+	double			mCPUUsage;
 	bool			mFirstRun;
 public:
 	CPUUsage()		{ mFirstRun = false; }
@@ -223,10 +224,12 @@ public:
 		return lx.QuadPart - ly.QuadPart;
 	}
 
-	inline float GetCPUUsage(FILETIME* prevSysKernel, FILETIME* prevSysUser, 
+	inline double GetCPUUsage(FILETIME* prevSysKernel, FILETIME* prevSysUser, 
 		FILETIME* prevProcKernel, FILETIME* prevProcUser, 
 		bool firstrun = false)
 	{
+
+		double nCpuCopy = mCPUUsage;
 		FILETIME	sysIdle, sysKernel, sysUser,
 					procCreation, procExit, procKernel, procUser;
 
@@ -234,31 +237,55 @@ public:
 			!GetProcessTimes(GetCurrentProcess(), &procCreation, &procExit, &procKernel, &procUser))
 		{
 			std::cout << "Can't get time info.\n";
-			return -1.0f;
+			return -1.0;
 		}
 
-		if (firstrun)
+		if (!firstrun)
 		{
-			prevSysKernel->dwLowDateTime	= sysKernel.dwLowDateTime;
-			prevSysKernel->dwHighDateTime	= sysKernel.dwHighDateTime;
+			ULL sysKernelDiff = SubtractTime(sysKernel, mPrevSysKernel);
+			ULL sysUserDiff = SubtractTime(sysUser, mPrevSysUser);
 
-			prevSysUser->dwLowDateTime		= sysUser.dwLowDateTime;
-			prevSysUser->dwHighDateTime		= sysUser.dwHighDateTime;
+			ULL procKernelDiff = SubtractTime(procKernel, mPrevProcKernel);
+			ULL procUserDiff = SubtractTime(procUser, mPrevProcUser);
 
-			prevProcKernel->dwLowDateTime	= procKernel.dwLowDateTime;
-			prevProcKernel->dwHighDateTime	= procKernel.dwHighDateTime;
+			ULL nTotalSys = sysKernelDiff + sysUserDiff;
+			ULL nTotalProc = procKernelDiff + procUserDiff;
 
-			prevProcUser->dwLowDateTime		= procUser.dwLowDateTime;
-			prevProcUser->dwHighDateTime = procUser.dwHighDateTime;
-			return -1.0f;
+			if (nTotalSys > 0)
+			{
+				mCPUUsage = (double)((100.0 * nTotalProc) / nTotalSys);
+			}
 		}
 
-		ULL sysTotal		= SubtractTime(sysKernel, *prevSysKernel) + SubtractTime(sysUser, *prevSysUser);
-		ULL procTotal		= SubtractTime(procKernel, *prevProcKernel) + SubtractTime(procUser, *prevProcUser);
+			//prevSysKernel->dwLowDateTime	= sysKernel.dwLowDateTime;
+			//prevSysKernel->dwHighDateTime	= sysKernel.dwHighDateTime;
 
-		if ((float)((100.0f * procTotal) / sysTotal) > 0.00f)
-			return (float)((100.0f * procTotal) / sysTotal);
-		else return 0.0f;
+			//prevSysUser->dwLowDateTime		= sysUser.dwLowDateTime;
+			//prevSysUser->dwHighDateTime		= sysUser.dwHighDateTime;
+
+			//prevProcKernel->dwLowDateTime	= procKernel.dwLowDateTime;
+			//prevProcKernel->dwHighDateTime	= procKernel.dwHighDateTime;
+
+			//prevProcUser->dwLowDateTime		= procUser.dwLowDateTime;
+			//prevProcUser->dwHighDateTime = procUser.dwHighDateTime;
+		// }
+		//	return -1.0;
+		
+
+		//ULL sysTotal		= SubtractTime(sysKernel, *prevSysKernel) + SubtractTime(sysUser, *prevSysUser);
+		//ULL procTotal		= SubtractTime(procKernel, *prevProcKernel) + SubtractTime(procUser, *prevProcUser);
+
+		//if ((double)((100.0 * procTotal) / sysTotal) > 0.00)
+		//	return (double)((100.0 * procTotal) / sysTotal);
+		//else return 0.0;
+
+		mPrevSysKernel = sysKernel;
+		mPrevSysUser = sysUser;
+		mPrevProcKernel = procKernel;
+		mPrevProcUser = procUser;
+
+		nCpuCopy = mCPUUsage;
+		return nCpuCopy;
 	}
 
 	inline void FindUsage(std::string filename, int x, int y, int numOfCavesToGenerate)
